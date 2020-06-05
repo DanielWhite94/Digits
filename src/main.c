@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "digits.h"
 
@@ -18,10 +17,10 @@ int main(int argc, char **argv) {
 	DWidget *label=dLabelNew("lolwut noob");
 	dBinAdd(window, label);
 
-	// Temp delay
-	sleep(4);
+	// Main loop
+	digitsLoop();
 
-	// Quit
+	// Tidy up
 	dWidgetFree(window);
 	digitsQuit();
 

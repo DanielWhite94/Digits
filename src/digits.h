@@ -11,4 +11,6 @@
 bool digitsInit(void);
 void digitsQuit(void);
 
+void digitsLoop(void); // enters the main event loop
+
 #endif
