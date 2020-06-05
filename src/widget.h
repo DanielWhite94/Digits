@@ -15,4 +15,6 @@ void dWidgetFree(DWidget *widget);
 
 DWidget *dWidgetGetParent(DWidget *widget);
 
+const char *dWidgetTypeToString(DWidgetType type);
+
 #endif
