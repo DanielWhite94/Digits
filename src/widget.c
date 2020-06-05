@@ -63,7 +63,7 @@ DWidgetObjectData *dWidgetGetObjectDataNoFail(DWidget *widget, DWidgetType subTy
 	DWidgetObjectData *data=dWidgetGetObjectData(widget, subType);
 
 	if (data==NULL || data->type!=subType) {
-		fatalError("dWidgetGetObjectDataNoFail no data or bad type\n");
+		fatalError("widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
 		return NULL;
 	}
 
