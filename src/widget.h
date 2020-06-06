@@ -2,9 +2,9 @@
 #define WIDGET_H
 
 typedef enum {
-		DWidgetTypeBin,
-		DWidgetTypeLabel,
-		DWidgetTypeWindow,
+	DWidgetTypeBin,
+	DWidgetTypeLabel,
+	DWidgetTypeWindow,
 } DWidgetType;
 
 typedef struct DWidget DWidget;
