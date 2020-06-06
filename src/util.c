@@ -26,7 +26,22 @@ void fatalError(const char *format, ...) {
 void fatalErrorV(const char *format, va_list ap) {
 	assert(format!=NULL);
 
-	vfprintf(stderr, format, ap);
-
+	warningV(format, ap);
 	abort();
 }
+
+void warning(const char *format, ...) {
+	assert(format!=NULL);
+
+	va_list ap;
+	va_start(ap, format);
+	warningV(format, ap);
+	va_end(ap);
+}
+
+void warningV(const char *format, va_list ap) {
+	assert(format!=NULL);
+
+	vfprintf(stderr, format, ap);
+}
+
