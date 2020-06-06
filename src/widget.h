@@ -9,6 +9,7 @@ typedef enum {
 	DWidgetTypeLabel,
 	DWidgetTypeTextButton,
 	DWidgetTypeWindow,
+	DWidgetTypeWidget, // common base widget
 	DWidgetTypeNB,
 } DWidgetType;
 

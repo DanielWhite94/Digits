@@ -107,6 +107,7 @@ static const char *dWidgetTypeStrings[DWidgetTypeNB]={
 	[DWidgetTypeLabel]="Label",
 	[DWidgetTypeTextButton]="TextButton",
 	[DWidgetTypeWindow]="Window",
+	[DWidgetTypeWidget]="Widget",
 };
 const char *dWidgetTypeToString(DWidgetType type) {
 	assert(dWidgetTypeIsValid(type));
@@ -200,12 +201,16 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	// Type specific logic
 	switch(data->type) {
 		case DWidgetTypeBin:
+			data->super=dWidgetObjectDataNew(DWidgetTypeWidget);
+
 			data->d.bin.child=NULL;
 		break;
 		case DWidgetTypeButton:
 			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
 		break;
 		case DWidgetTypeLabel:
+			data->super=dWidgetObjectDataNew(DWidgetTypeWidget);
+
 			data->d.label.text=malloc(1);
 			data->d.label.text[0]='\0';
 		break;
@@ -216,6 +221,9 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
 
 			data->d.window.sdlWindow=NULL;
+		break;
+		case DWidgetTypeWidget:
+			// This is the only type which does not inherit from any other
 		break;
 		case DWidgetTypeNB:
 			assert(false);
@@ -245,6 +253,8 @@ void dWidgetObjectDataFree(DWidgetObjectData *data) {
 		case DWidgetTypeWindow:
 			if (data->d.window.sdlWindow!=NULL)
 				SDL_DestroyWindow(data->d.window.sdlWindow);
+		break;
+		case DWidgetTypeWidget:
 		break;
 		case DWidgetTypeNB:
 			assert(false);
