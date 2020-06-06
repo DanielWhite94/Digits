@@ -103,7 +103,9 @@ bool dWidgetTypeIsValid(DWidgetType type) {
 
 static const char *dWidgetTypeStrings[DWidgetTypeNB]={
 	[DWidgetTypeBin]="Bin",
+	[DWidgetTypeButton]="Button",
 	[DWidgetTypeLabel]="Label",
+	[DWidgetTypeTextButton]="TextButton",
 	[DWidgetTypeWindow]="Window",
 };
 const char *dWidgetTypeToString(DWidgetType type) {
@@ -200,9 +202,15 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 		case DWidgetTypeBin:
 			data->d.bin.child=NULL;
 		break;
+		case DWidgetTypeButton:
+			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
+		break;
 		case DWidgetTypeLabel:
 			data->d.label.text=malloc(1);
 			data->d.label.text[0]='\0';
+		break;
+		case DWidgetTypeTextButton:
+			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
 		break;
 		case DWidgetTypeWindow:
 			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
@@ -227,8 +235,12 @@ void dWidgetObjectDataFree(DWidgetObjectData *data) {
 		case DWidgetTypeBin:
 			// TODO: consider data->d.bin.child - should be removed before this point anyway?
 		break;
+		case DWidgetTypeButton:
+		break;
 		case DWidgetTypeLabel:
 			free(data->d.label.text);
+		break;
+		case DWidgetTypeTextButton:
 		break;
 		case DWidgetTypeWindow:
 			if (data->d.window.sdlWindow!=NULL)

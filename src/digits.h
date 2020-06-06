@@ -4,7 +4,9 @@
 #include <stdbool.h>
 
 #include "bin.h"
+#include "button.h"
 #include "label.h"
+#include "textbutton.h"
 #include "widget.h"
 #include "window.h"
 
