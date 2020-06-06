@@ -24,3 +24,11 @@ DWidget *dWindowNew(const char *title, int width, int height) {
 
 	return window;
 }
+
+const char *dWindowGetTitle(const DWidget *window) {
+	assert(window!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(window, DWidgetTypeWindow);
+
+	return SDL_GetWindowTitle(data->d.window.sdlWindow);
+}
