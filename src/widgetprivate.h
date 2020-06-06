@@ -5,6 +5,8 @@
 
 #include "widget.h"
 
+#define DWidgetSignalDataMax 16
+
 typedef struct {
 	DWidget *child;
 } DWidgetObjectDataBin;
@@ -28,9 +30,17 @@ struct DWidgetObjectData {
 	} d;
 };
 
+typedef struct {
+	DWidgetSignalHandler *handler;
+	void *userData;
+} DWidgetSignalData;
+
 struct DWidget {
 	DWidgetObjectData *base;
 	DWidget *parent;
+
+	DWidgetSignalData signals[DWidgetSignalTypeNB][DWidgetSignalDataMax];
+	size_t signalsCount[DWidgetSignalTypeNB];
 };
 
 DWidget *dWidgetNew(DWidgetType type);

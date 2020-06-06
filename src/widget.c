@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "util.h"
 #include "widget.h"
@@ -8,11 +9,14 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type);
 void dWidgetObjectDataFree(DWidgetObjectData *data);
 
 DWidget *dWidgetNew(DWidgetType type) {
+	assert(dWidgetTypeIsValid(type));
+
 	// Allocate widget memory and init fields
 	DWidget *widget=mallocNoFail(sizeof(DWidget));
 
 	widget->base=NULL;
 	widget->parent=NULL;
+	memset(widget->signalsCount, 0, sizeof(widget->signalsCount[0])*DWidgetSignalTypeNB);
 
 	// Initialise base object (and any other it derives from)
 	widget->base=dWidgetObjectDataNew(type);
@@ -44,13 +48,98 @@ DWidgetType dWidgetGetBaseType(const DWidget *widget) {
 	return widget->base->type;
 }
 
-static const char *dWidgetTypeStrings[]={
+bool dWidgetGetHasType(const DWidget *widget, DWidgetType type) {
+	assert(widget!=NULL);
+	assert(dWidgetTypeIsValid(type));
+
+	const DWidgetObjectData *data;
+	for(data=widget->base; data!=NULL; data=data->super)
+		if (data->type==type)
+			return true;
+	return false;
+}
+
+bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData) {
+	assert(widget!=NULL);
+	assert(dWidgetSignalTypeIsValid(type));
+	assert(handler!=NULL);
+
+	// Is this a valid type of signal for this widget?
+	if (!dWidgetGetHasType(widget, dWidgetSignalTypeToWidgetType(type))) {
+		warning("warning: can not add signal handler of type %s to widget %p - unsuitable widget type %s\n", dWidgetSignalTypeToString(type), widget, dWidgetTypeToString(dWidgetGetBaseType(widget)));
+		return false;
+	}
+
+	// Have we reached the limit of handlers for this widget and sub class?
+	if (widget->signalsCount[type]>=DWidgetSignalDataMax) {
+		warning("warning: can not add signal handler of type %s to widget %p - max of %u already reached\n", dWidgetSignalTypeToString(type), widget, DWidgetSignalDataMax);
+		return false;
+	}
+
+	// Add this handler to array of handlers
+	widget->signals[type][widget->signalsCount[type]].handler=handler;
+	widget->signals[type][widget->signalsCount[type]].userData=userData;
+	widget->signalsCount[type]++;
+
+	return true;
+}
+
+void dWidgetSignalInvoke(const DWidgetSignalEvent *event) {
+	assert(event!=NULL);
+	assert(dWidgetSignalTypeIsValid(event->type));
+	assert(event->widget!=NULL);
+
+	// Loop over registered handlers calling each one in turn (stopping early if any handlers request this)
+	for(size_t i=0; i<event->widget->signalsCount[event->type]; ++i) {
+		const DWidgetSignalData *signalData=&event->widget->signals[event->type][i];
+		if (signalData->handler(event, signalData->userData)==DWidgetSignalReturnStop)
+			break;
+	}
+}
+
+bool dWidgetTypeIsValid(DWidgetType type) {
+	return (type>=0 && type<DWidgetTypeNB);
+}
+
+static const char *dWidgetTypeStrings[DWidgetTypeNB]={
 	[DWidgetTypeBin]="Bin",
 	[DWidgetTypeLabel]="Label",
 	[DWidgetTypeWindow]="Window",
 };
 const char *dWidgetTypeToString(DWidgetType type) {
+	assert(dWidgetTypeIsValid(type));
+
 	return dWidgetTypeStrings[type];
+}
+
+bool dWidgetSignalTypeIsValid(DWidgetSignalType type) {
+	return (type>=0 && type<DWidgetSignalTypeNB);
+}
+
+static const char *dWidgetSignalTypeStrings[]={
+	[DWidgetSignalTypeWindowClose]="WindowClose",
+};
+const char *dWidgetSignalTypeToString(DWidgetSignalType type) {
+	assert(dWidgetSignalTypeIsValid(type));
+
+	return dWidgetSignalTypeStrings[type];
+}
+
+DWidgetType dWidgetSignalTypeToWidgetType(DWidgetSignalType type) {
+	assert(dWidgetSignalTypeIsValid(type));
+
+	switch(type) {
+		case DWidgetSignalTypeWindowClose:
+			return DWidgetTypeWindow;
+		break;
+		case DWidgetSignalTypeNB:
+			assert(false);
+			return DWidgetTypeNB;
+		break;
+	}
+
+	assert(false);
+	return DWidgetTypeNB;
 }
 
 DWidgetObjectData *dWidgetGetObjectData(DWidget *widget, DWidgetType subType) {
@@ -120,6 +209,9 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 
 			data->d.window.sdlWindow=NULL;
 		break;
+		case DWidgetTypeNB:
+			assert(false);
+		break;
 	}
 
 	return data;
@@ -141,6 +233,9 @@ void dWidgetObjectDataFree(DWidgetObjectData *data) {
 		case DWidgetTypeWindow:
 			if (data->d.window.sdlWindow!=NULL)
 				SDL_DestroyWindow(data->d.window.sdlWindow);
+		break;
+		case DWidgetTypeNB:
+			assert(false);
 		break;
 	}
 
