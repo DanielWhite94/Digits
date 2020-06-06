@@ -65,9 +65,9 @@ void digitsLoopHandleSdlEvents(void) {
 		switch(sdlEvent.type) {
 			case SDL_WINDOWEVENT: {
 				// Find widget represented by this event's SDL window ID
-				DWidget *eventWidget=digitsGetWidgetFromSdlWindowId(sdlEvent.window.windowID);
-				if (eventWidget==NULL) {
-					warning("warning: could not get window widget for SDL_WINDOWEVENT, ignoring\n");
+				DWidget *windowWidget=digitsGetWidgetFromSdlWindowId(sdlEvent.window.windowID);
+				if (windowWidget==NULL) {
+					warning("warning: could not get window widget for SDL_WINDOWEVENT event, ignoring\n");
 					break;
 				}
 
@@ -77,7 +77,7 @@ void digitsLoopHandleSdlEvents(void) {
 						// Invoke window close signal
 						DWidgetSignalEvent dEvent;
 						dEvent.type=DWidgetSignalTypeWindowClose;
-						dEvent.widget=eventWidget;
+						dEvent.widget=windowWidget;
 						dWidgetSignalInvoke(&dEvent);
 					} break;
 				}
