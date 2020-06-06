@@ -38,4 +38,7 @@ DWidget *dWidgetNew(DWidgetType type);
 DWidgetObjectData *dWidgetGetObjectData(DWidget *widget, DWidgetType subType);
 DWidgetObjectData *dWidgetGetObjectDataNoFail(DWidget *widget, DWidgetType subType); // return will never be NULL, and type will always match that given (otherwise program is aborted)
 
+const DWidgetObjectData *dWidgetGetObjectDataConst(const DWidget *widget, DWidgetType subType);
+const DWidgetObjectData *dWidgetGetObjectDataConstNoFail(const DWidget *widget, DWidgetType subType); // return will never be NULL, and type will always match that given (otherwise program is aborted)
+
 #endif

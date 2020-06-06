@@ -70,6 +70,29 @@ DWidgetObjectData *dWidgetGetObjectDataNoFail(DWidget *widget, DWidgetType subTy
 	return data;
 }
 
+const DWidgetObjectData *dWidgetGetObjectDataConst(const DWidget *widget, DWidgetType subType) {
+	assert(widget!=NULL);
+
+	const DWidgetObjectData *data;
+	for(data=widget->base; data!=NULL; data=data->super)
+		if (data->type==subType)
+			break;
+	return data;
+}
+
+const DWidgetObjectData *dWidgetGetObjectDataConstNoFail(const DWidget *widget, DWidgetType subType) {
+	assert(widget!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConst(widget, subType);
+
+	if (data==NULL || data->type!=subType) {
+		fatalError("widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
+		return NULL;
+	}
+
+	return data;
+}
+
 DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	// Allocate memory and set basic fields
 	DWidgetObjectData *data=mallocNoFail(sizeof(DWidgetObjectData));
