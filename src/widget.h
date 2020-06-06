@@ -14,6 +14,7 @@ typedef struct DWidget DWidget;
 void dWidgetFree(DWidget *widget);
 
 DWidget *dWidgetGetParent(DWidget *widget);
+DWidgetType dWidgetGetBaseType(const DWidget *widget);
 
 const char *dWidgetTypeToString(DWidgetType type);
 

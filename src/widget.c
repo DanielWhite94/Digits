@@ -38,6 +38,12 @@ DWidget *dWidgetGetParent(DWidget *widget) {
 	return widget->parent;
 }
 
+DWidgetType dWidgetGetBaseType(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	return widget->base->type;
+}
+
 static const char *dWidgetTypeStrings[]={
 	[DWidgetTypeBin]="Bin",
 	[DWidgetTypeLabel]="Label",
