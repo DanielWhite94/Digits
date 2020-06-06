@@ -8,8 +8,9 @@
 #define DWidgetSignalDataMax 16
 
 typedef struct {
-	DWidget *child;
-} DWidgetObjectDataBin;
+	DWidget **children;
+	size_t childCount;
+} DWidgetObjectDataContainer;
 
 typedef struct {
 	char *text;
@@ -24,7 +25,7 @@ struct DWidgetObjectData {
 	DWidgetType type;
 	DWidgetObjectData *super;
 	union {
-		DWidgetObjectDataBin bin;
+		DWidgetObjectDataContainer container;
 		DWidgetObjectDataLabel label;
 		DWidgetObjectDataWindow window;
 	} d;

@@ -105,6 +105,7 @@ bool dWidgetTypeIsValid(DWidgetType type) {
 static const char *dWidgetTypeStrings[DWidgetTypeNB]={
 	[DWidgetTypeBin]="Bin",
 	[DWidgetTypeButton]="Button",
+	[DWidgetTypeContainer]="Container",
 	[DWidgetTypeLabel]="Label",
 	[DWidgetTypeTextButton]="TextButton",
 	[DWidgetTypeWindow]="Window",
@@ -202,12 +203,16 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	// Type specific logic
 	switch(data->type) {
 		case DWidgetTypeBin:
-			data->super=dWidgetObjectDataNew(DWidgetTypeWidget);
-
-			data->d.bin.child=NULL;
+			data->super=dWidgetObjectDataNew(DWidgetTypeContainer);
 		break;
 		case DWidgetTypeButton:
 			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
+		break;
+		case DWidgetTypeContainer:
+			data->super=dWidgetObjectDataNew(DWidgetTypeWidget);
+
+			data->d.container.children=NULL;
+			data->d.container.childCount=0;
 		break;
 		case DWidgetTypeLabel:
 			data->super=dWidgetObjectDataNew(DWidgetTypeWidget);
@@ -245,6 +250,9 @@ void dWidgetObjectDataFree(DWidgetObjectData *data) {
 			// TODO: consider data->d.bin.child - should be removed before this point anyway?
 		break;
 		case DWidgetTypeButton:
+		break;
+		case DWidgetTypeContainer:
+			free(data->d.container.children);
 		break;
 		case DWidgetTypeLabel:
 			free(data->d.label.text);

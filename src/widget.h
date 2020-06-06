@@ -6,6 +6,7 @@
 typedef enum {
 	DWidgetTypeBin,
 	DWidgetTypeButton,
+	DWidgetTypeContainer,
 	DWidgetTypeLabel,
 	DWidgetTypeTextButton,
 	DWidgetTypeWindow,
