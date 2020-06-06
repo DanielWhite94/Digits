@@ -35,16 +35,19 @@ void digitsLoop(void) {
 DWidget *digitsGetWidgetFromSdlWindowId(unsigned id) {
 	SDL_Window *sdlWindow=SDL_GetWindowFromID(id);
 	if (sdlWindow==NULL) {
+		warning("warning: no SDL window with id %u\n", id);
 		return NULL;
 	}
 
 	DWidget *widget=SDL_GetWindowData(sdlWindow, "widget");
 	if (widget==NULL) {
+		warning("warning: no widget data in SDL window %p (id %u)\n", sdlWindow, id);
 		return NULL;
 	}
 
 	// As an additonal safety check, verify widget is a window
 	if (dWidgetGetBaseType(widget)!=DWidgetTypeWindow) {
+		warning("warning: expected widget of type %s but got %s (widget %p, SDL window %p, id %u)\n", dWidgetTypeToString(DWidgetTypeWindow), dWidgetTypeToString(dWidgetGetBaseType(widget)), widget, sdlWindow, id);
 		return NULL;
 	}
 

@@ -69,7 +69,7 @@ DWidgetObjectData *dWidgetGetObjectDataNoFail(DWidget *widget, DWidgetType subTy
 	DWidgetObjectData *data=dWidgetGetObjectData(widget, subType);
 
 	if (data==NULL || data->type!=subType) {
-		fatalError("widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
+		fatalError("error: widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
 		return NULL;
 	}
 
@@ -92,7 +92,7 @@ const DWidgetObjectData *dWidgetGetObjectDataConstNoFail(const DWidget *widget, 
 	const DWidgetObjectData *data=dWidgetGetObjectDataConst(widget, subType);
 
 	if (data==NULL || data->type!=subType) {
-		fatalError("widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
+		fatalError("error: widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
 		return NULL;
 	}
 

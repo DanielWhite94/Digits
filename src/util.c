@@ -10,7 +10,7 @@ void *mallocNoFail(size_t size) {
 void *reallocNoFail(void *ptr, size_t size) {
 	ptr=realloc(ptr, size);
 	if (ptr==NULL)
-		fatalError("memory allocation failure\n");
+		fatalError("error: memory allocation failure\n");
 	return ptr;
 }
 
