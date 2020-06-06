@@ -8,9 +8,10 @@
 #include "widget.h"
 #include "window.h"
 
-bool digitsInit(void);
-void digitsQuit(void);
+bool digitsInit(void); // also returns true if already initialised
+void digitsQuit(void); // this should only be called once, regardless of how many times init was called
 
 void digitsLoop(void); // enters the main event loop
+void digitsLoopStop(void); // exits the loop
 
 #endif
