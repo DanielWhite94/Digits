@@ -63,6 +63,25 @@ void digitsLoopHandleSdlEvents(void) {
 	SDL_Event sdlEvent;
 	while(SDL_PollEvent(&sdlEvent)) {
 		switch(sdlEvent.type) {
+			case SDL_WINDOWEVENT: {
+				// Find widget represented by this event's SDL window ID
+				DWidget *eventWidget=digitsGetWidgetFromSdlWindowId(sdlEvent.window.windowID);
+				if (eventWidget==NULL) {
+					warning("warning: could not get window widget for SDL_WINDOWEVENT, ignoring\n");
+					break;
+				}
+
+				// Event specific logic
+				switch(sdlEvent.window.event) {
+					case SDL_WINDOWEVENT_CLOSE: {
+						// Invoke window close signal
+						DWidgetSignalEvent dEvent;
+						dEvent.type=DWidgetSignalTypeWindowClose;
+						dEvent.widget=eventWidget;
+						dWidgetSignalInvoke(&dEvent);
+					} break;
+				}
+			} break;
 			case SDL_QUIT:
 				// TODO: remove this once we have a better way of terminating (as otherwise closing all windows will cause this to fire)
 				digitsLoopStop();
