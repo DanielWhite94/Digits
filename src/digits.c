@@ -2,6 +2,8 @@
 
 #include "digits.h"
 
+DWidget *digitsGetWidgetFromSdlWindowId(unsigned id);
+
 bool digitsInit(void) {
 	// Initialise SDL
 	if(SDL_Init(SDL_INIT_VIDEO)<0)
@@ -28,4 +30,23 @@ void digitsLoop(void) {
 			}
 		}
 	}
+}
+
+DWidget *digitsGetWidgetFromSdlWindowId(unsigned id) {
+	SDL_Window *sdlWindow=SDL_GetWindowFromID(id);
+	if (sdlWindow==NULL) {
+		return NULL;
+	}
+
+	DWidget *widget=SDL_GetWindowData(sdlWindow, "widget");
+	if (widget==NULL) {
+		return NULL;
+	}
+
+	// As an additonal safety check, verify widget is a window
+	if (dWidgetGetBaseType(widget)!=DWidgetTypeWindow) {
+		return NULL;
+	}
+
+	return widget;
 }
