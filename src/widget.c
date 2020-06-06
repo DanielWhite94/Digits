@@ -84,7 +84,7 @@ bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignal
 	return true;
 }
 
-void dWidgetSignalInvoke(const DWidgetSignalEvent *event) {
+DWidgetSignalReturn dWidgetSignalInvoke(const DWidgetSignalEvent *event) {
 	assert(event!=NULL);
 	assert(dWidgetSignalTypeIsValid(event->type));
 	assert(event->widget!=NULL);
@@ -93,8 +93,9 @@ void dWidgetSignalInvoke(const DWidgetSignalEvent *event) {
 	for(size_t i=0; i<event->widget->signalsCount[event->type]; ++i) {
 		const DWidgetSignalData *signalData=&event->widget->signals[event->type][i];
 		if (signalData->handler(event, signalData->userData)==DWidgetSignalReturnStop)
-			break;
+			return DWidgetSignalReturnStop;
 	}
+	return DWidgetSignalReturnContinue;
 }
 
 bool dWidgetTypeIsValid(DWidgetType type) {

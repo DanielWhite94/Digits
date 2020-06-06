@@ -43,7 +43,7 @@ DWidgetType dWidgetGetBaseType(const DWidget *widget);
 bool dWidgetGetHasType(const DWidget *widget, DWidgetType type); // does the base type, or any of the derived types match the type given?
 
 bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData);
-void dWidgetSignalInvoke(const DWidgetSignalEvent *event);
+DWidgetSignalReturn dWidgetSignalInvoke(const DWidgetSignalEvent *event); // returns DWidgetSignalReturnStop if any handlers do, otherwise returns DWidgetSignalReturnContinue
 
 bool dWidgetTypeIsValid(DWidgetType type);
 const char *dWidgetTypeToString(DWidgetType type);
