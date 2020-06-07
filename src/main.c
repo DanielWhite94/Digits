@@ -20,11 +20,18 @@ int main(int argc, char **argv) {
 	DWidget *label=dLabelNew("lolwut noob");
 	dBinAdd(window, label);
 
-	DWidget *window2=dWindowNew("New Win", 1024, 960);
+	DWidget *window2=dWindowNew("New Win", 160, 100);
+
+	DWidget *button=dTextButtonNew("click me!");
+	dBinAdd(window2, button);
 
 	// Connect signals
 	dWidgetSignalConnect(window, DWidgetSignalTypeWindowClose, &windowCloseHandler, NULL);
 	dWidgetSignalConnect(window2, DWidgetSignalTypeWindowClose, &windowCloseHandler, NULL);
+
+	// Debugging
+	dWidgetDebug(window, 0);
+	dWidgetDebug(window2, 0);
 
 	// Main loop
 	digitsLoop();
