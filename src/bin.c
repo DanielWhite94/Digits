@@ -1,6 +1,7 @@
 #include <assert.h>
 
 #include "bin.h"
+#include "binprivate.h"
 #include "container.h"
 
 bool dBinAdd(DWidget *bin, DWidget *child) {
@@ -27,4 +28,20 @@ const DWidget *dBinGetChildConst(const DWidget *bin) {
 
 	// Simply return first child from container (if exists)
 	return dContainerGetChildNConst(bin, 0);
+}
+
+int dBinVTableGetWidth(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	// Simply use childs width (or 0 if empty)
+	const DWidget *child=dBinGetChildConst(widget);
+	return (child!=NULL ? dWidgetGetWidth(child) : 0);
+}
+
+int dBinVTableGetHeight(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	// Simply use childs height (or 0 if empty)
+	const DWidget *child=dBinGetChildConst(widget);
+	return (child!=NULL ? dWidgetGetHeight(child) : 0);
 }

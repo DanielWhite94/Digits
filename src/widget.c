@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "binprivate.h"
+#include "container.h"
+#include "containerprivate.h"
+#include "labelprivate.h"
 #include "util.h"
 #include "widget.h"
 
@@ -57,6 +61,54 @@ bool dWidgetGetHasType(const DWidget *widget, DWidgetType type) {
 		if (data->type==type)
 			return true;
 	return false;
+}
+
+int dWidgetGetMinWidth(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data;
+	for(data=widget->base; data!=NULL; data=data->super)
+		if (data->vtable.getMinWidth!=NULL)
+			return data->vtable.getMinWidth(widget);
+
+	fatalError("error: widget %p has no getMinWidth vtable entry\n", widget);
+	return 0;
+}
+
+int dWidgetGetMinHeight(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data;
+	for(data=widget->base; data!=NULL; data=data->super)
+		if (data->vtable.getMinHeight!=NULL)
+			return data->vtable.getMinHeight(widget);
+
+	fatalError("error: widget %p has no getMinHeight vtable entry\n", widget);
+	return 0;
+}
+
+int dWidgetGetWidth(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data;
+	for(data=widget->base; data!=NULL; data=data->super)
+		if (data->vtable.getWidth!=NULL)
+			return data->vtable.getWidth(widget);
+
+	fatalError("error: widget %p has no getWidth vtable entry\n", widget);
+	return 0;
+}
+
+int dWidgetGetHeight(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data;
+	for(data=widget->base; data!=NULL; data=data->super)
+		if (data->vtable.getHeight!=NULL)
+			return data->vtable.getHeight(widget);
+
+	fatalError("error: widget %p has no getHeight vtable entry\n", widget);
+	return 0;
 }
 
 bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData) {
@@ -193,6 +245,30 @@ const DWidgetObjectData *dWidgetGetObjectDataConstNoFail(const DWidget *widget, 
 	return data;
 }
 
+int dWidgetVTableGetMinWidth(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	return 0;
+}
+
+int dWidgetVTableGetMinHeight(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	return 0;
+}
+
+int dWidgetVTableGetWidth(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	return 0;
+}
+
+int dWidgetVTableGetHeight(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	return 0;
+}
+
 DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	// Allocate memory and set basic fields
 	DWidgetObjectData *data=mallocNoFail(sizeof(DWidgetObjectData));
@@ -200,10 +276,16 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	data->type=type;
 	data->super=NULL;
 
+	data->vtable.getMinWidth=NULL;
+	data->vtable.getMinHeight=NULL;
+
 	// Type specific logic
 	switch(data->type) {
 		case DWidgetTypeBin:
 			data->super=dWidgetObjectDataNew(DWidgetTypeContainer);
+
+			data->vtable.getWidth=&dBinVTableGetWidth;
+			data->vtable.getHeight=&dBinVTableGetHeight;
 		break;
 		case DWidgetTypeButton:
 			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
@@ -213,12 +295,20 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 
 			data->d.container.children=NULL;
 			data->d.container.childCount=0;
+
+			data->vtable.getMinWidth=&dContainerVTableGetMinWidth;
+			data->vtable.getMinHeight=&dContainerVTableGetMinHeight;
 		break;
 		case DWidgetTypeLabel:
 			data->super=dWidgetObjectDataNew(DWidgetTypeWidget);
 
 			data->d.label.text=malloc(1);
 			data->d.label.text[0]='\0';
+
+			data->vtable.getMinWidth=&dLabelVTableGetMinWidth;
+			data->vtable.getMinHeight=&dLabelVTableGetMinHeight;
+			data->vtable.getWidth=&dLabelVTableGetWidth;
+			data->vtable.getHeight=&dLabelVTableGetHeight;
 		break;
 		case DWidgetTypeTextButton:
 			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
@@ -230,6 +320,11 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 		break;
 		case DWidgetTypeWidget:
 			// This is the only type which does not inherit from any other
+
+			data->vtable.getMinWidth=&dWidgetVTableGetMinWidth;
+			data->vtable.getMinHeight=&dWidgetVTableGetMinHeight;
+			data->vtable.getWidth=&dWidgetVTableGetWidth;
+			data->vtable.getHeight=&dWidgetVTableGetHeight;
 		break;
 		case DWidgetTypeNB:
 			assert(false);

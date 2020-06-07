@@ -1,6 +1,7 @@
 #include <assert.h>
 
 #include "container.h"
+#include "containerprivate.h"
 #include "util.h"
 
 bool dContainerAdd(DWidget *container, DWidget *child) {
@@ -51,4 +52,34 @@ size_t dContainerGetChildCount(const DWidget *container) {
 	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(container, DWidgetTypeContainer);
 
 	return data->d.container.childCount;
+}
+
+int dContainerVTableGetMinWidth(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	int sum=0;
+
+	// Sum child min widths
+	size_t childCount=dContainerGetChildCount(widget);
+	for(size_t i=0; i<childCount; ++i) {
+		const DWidget *child=dContainerGetChildNConst(widget, i);
+		sum+=dWidgetGetMinWidth(child);
+	}
+
+	return sum;
+}
+
+int dContainerVTableGetMinHeight(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	int sum=0;
+
+	// Sum child min heights
+	size_t childCount=dContainerGetChildCount(widget);
+	for(size_t i=0; i<childCount; ++i) {
+		const DWidget *child=dContainerGetChildNConst(widget, i);
+		sum+=dWidgetGetMinHeight(child);
+	}
+
+	return sum;
 }

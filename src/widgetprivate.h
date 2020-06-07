@@ -7,6 +7,18 @@
 
 #define DWidgetSignalDataMax 16
 
+typedef int (DWidgetVTableGetMinWidth)(const DWidget *widget);
+typedef int (DWidgetVTableGetMinHeight)(const DWidget *widget);
+typedef int (DWidgetVTableGetWidth)(const DWidget *widget);
+typedef int (DWidgetVTableGetHeight)(const DWidget *widget);
+
+typedef struct {
+	DWidgetVTableGetMinWidth *getMinWidth;
+	DWidgetVTableGetMinHeight *getMinHeight;
+	DWidgetVTableGetWidth *getWidth;
+	DWidgetVTableGetHeight *getHeight;
+} DWidgetVTable;
+
 typedef struct {
 	DWidget **children;
 	size_t childCount;
@@ -29,6 +41,8 @@ struct DWidgetObjectData {
 		DWidgetObjectDataLabel label;
 		DWidgetObjectDataWindow window;
 	} d;
+
+	DWidgetVTable vtable;
 };
 
 typedef struct {
@@ -51,5 +65,10 @@ DWidgetObjectData *dWidgetGetObjectDataNoFail(DWidget *widget, DWidgetType subTy
 
 const DWidgetObjectData *dWidgetGetObjectDataConst(const DWidget *widget, DWidgetType subType);
 const DWidgetObjectData *dWidgetGetObjectDataConstNoFail(const DWidget *widget, DWidgetType subType); // return will never be NULL, and type will always match that given (otherwise program is aborted)
+
+int dWidgetVTableGetMinWidth(const DWidget *widget);
+int dWidgetVTableGetMinHeight(const DWidget *widget);
+int dWidgetVTableGetWidth(const DWidget *widget);
+int dWidgetVTableGetHeight(const DWidget *widget);
 
 #endif

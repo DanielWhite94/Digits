@@ -42,6 +42,10 @@ void dWidgetFree(DWidget *widget);
 DWidget *dWidgetGetParent(DWidget *widget);
 DWidgetType dWidgetGetBaseType(const DWidget *widget);
 bool dWidgetGetHasType(const DWidget *widget, DWidgetType type); // does the base type, or any of the derived types match the type given?
+int dWidgetGetMinWidth(const DWidget *widget);
+int dWidgetGetMinHeight(const DWidget *widget);
+int dWidgetGetWidth(const DWidget *widget);
+int dWidgetGetHeight(const DWidget *widget);
 
 bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData);
 DWidgetSignalReturn dWidgetSignalInvoke(const DWidgetSignalEvent *event); // returns DWidgetSignalReturnStop if any handlers do, otherwise returns DWidgetSignalReturnContinue
