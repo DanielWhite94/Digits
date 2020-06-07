@@ -331,6 +331,9 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 		break;
 	}
 
+	if (data->type!=DWidgetTypeWidget && data->super==NULL)
+		fatalError("error: internal error creating widget - non-base widget with no super instance\n");
+
 	return data;
 }
 
