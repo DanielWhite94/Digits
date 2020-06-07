@@ -223,7 +223,7 @@ void dWidgetDebug(const DWidget *widget, int indentation) {
 	for(int i=0; i<indentation; ++i)
 		printf(" ");
 	printf("%s %p", dWidgetTypeToString(dWidgetGetBaseType(widget)), widget);
-	printf(" (w,h)=(%i,%i)", dWidgetGetWidth(widget), dWidgetGetHeight(widget));
+	printf(" (x,y,w,h)=(%i,%i,%i,%i)", dWidgetGetGlobalX(widget), dWidgetGetGlobalY(widget), dWidgetGetWidth(widget), dWidgetGetHeight(widget));
 	printf("\n");
 
 	// If this is a container, recurse to handle children
