@@ -118,6 +118,36 @@ int dWidgetGetHeight(const DWidget *widget) {
 	return 0;
 }
 
+int dWidgetGetGlobalX(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	// If we have no parent, then global offset is 0
+	// (this should only really apply to the root Window widget)
+	const DWidget *parent=dWidgetGetParentConst(widget);
+	if (parent==NULL)
+		return 0;
+
+	// Grab parents position and our offset within, and return sum
+	int parentPos=dWidgetGetGlobalX(parent);
+	int offset=dWidgetGetChildXOffset(parent, widget);
+	return parentPos+offset;
+}
+
+int dWidgetGetGlobalY(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	// If we have no parent, then global offset is 0
+	// (this should only really apply to the root Window widget)
+	const DWidget *parent=dWidgetGetParentConst(widget);
+	if (parent==NULL)
+		return 0;
+
+	// Grab parents position and our offset within, and return sum
+	int parentPos=dWidgetGetGlobalY(parent);
+	int offset=dWidgetGetChildYOffset(parent, widget);
+	return parentPos+offset;
+}
+
 int dWidgetGetChildXOffset(const DWidget *parent, const DWidget *child) {
 	assert(parent!=NULL);
 	assert(child!=NULL);

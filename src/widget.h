@@ -47,6 +47,9 @@ int dWidgetGetMinWidth(const DWidget *widget);
 int dWidgetGetMinHeight(const DWidget *widget);
 int dWidgetGetWidth(const DWidget *widget);
 int dWidgetGetHeight(const DWidget *widget);
+// These two functions return values relative to the top left corner of the parent Window
+int dWidgetGetGlobalX(const DWidget *widget);
+int dWidgetGetGlobalY(const DWidget *widget);
 // These two functions return values relatlive to the top left corner of the parent container
 int dWidgetGetChildXOffset(const DWidget *parent, const DWidget *child);
 int dWidgetGetChildYOffset(const DWidget *parent, const DWidget *child);
