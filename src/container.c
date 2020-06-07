@@ -34,6 +34,17 @@ DWidget *dContainerGetChildN(DWidget *container, size_t n) {
 	return data->d.container.children[n];
 }
 
+const DWidget *dContainerGetChildNConst(const DWidget *container, size_t n) {
+	assert(container!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(container, DWidgetTypeContainer);
+
+	if (n>=data->d.container.childCount)
+		return NULL;
+
+	return data->d.container.children[n];
+}
+
 size_t dContainerGetChildCount(const DWidget *container) {
 	assert(container!=NULL);
 
