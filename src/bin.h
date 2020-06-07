@@ -8,5 +8,6 @@
 bool dBinAdd(DWidget *bin, DWidget *child); // fails if bin already has child, or child already has parent
 
 DWidget *dBinGetChild(DWidget *bin);
+const DWidget *dBinGetChildConst(const DWidget *bin);
 
 #endif

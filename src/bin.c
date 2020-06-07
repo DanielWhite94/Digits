@@ -21,3 +21,10 @@ DWidget *dBinGetChild(DWidget *bin) {
 	// Simply return first child from container (if exists)
 	return dContainerGetChildN(bin, 0);
 }
+
+const DWidget *dBinGetChildConst(const DWidget *bin) {
+	assert(bin!=NULL);
+
+	// Simply return first child from container (if exists)
+	return dContainerGetChildNConst(bin, 0);
+}
