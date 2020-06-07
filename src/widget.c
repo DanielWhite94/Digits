@@ -70,6 +70,31 @@ bool dWidgetGetHasType(const DWidget *widget, DWidgetType type) {
 	return false;
 }
 
+DWidget *dWidgetGetWidgetByXY(DWidget *widget, int globalX, int globalY) {
+	assert(widget!=NULL);
+
+	// Not even inside this widget?
+	int widgetX=dWidgetGetGlobalX(widget);
+	int widgetY=dWidgetGetGlobalY(widget);
+	if (globalX<widgetX || globalX>=widgetX+dWidgetGetWidth(widget) || globalY<widgetY || globalY>=widgetY+dWidgetGetHeight(widget))
+		return NULL;
+
+	// If this widget is a container, check if pointing at a child
+	if (dWidgetGetHasType(widget, DWidgetTypeContainer)) {
+		size_t childCount=dContainerGetChildCount(widget);
+		for(size_t i=0; i<childCount; ++i) {
+			// Call ourselves recursively on this child to test for a hit
+			DWidget *child=dContainerGetChildN(widget, i);
+			DWidget *result=dWidgetGetWidgetByXY(child, globalX, globalY);
+			if (result!=NULL)
+				return result;
+		}
+	}
+
+	// If no children, or does not point at any children, then simple return this widget itself.
+	return widget;
+}
+
 int dWidgetGetMinWidth(const DWidget *widget) {
 	assert(widget!=NULL);
 
