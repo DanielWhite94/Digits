@@ -50,6 +50,8 @@ int dWidgetGetHeight(const DWidget *widget);
 bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData);
 DWidgetSignalReturn dWidgetSignalInvoke(const DWidgetSignalEvent *event); // returns DWidgetSignalReturnStop if any handlers do, otherwise returns DWidgetSignalReturnContinue
 
+void dWidgetDebug(const DWidget *widget, int indentation);
+
 bool dWidgetTypeIsValid(DWidgetType type);
 const char *dWidgetTypeToString(DWidgetType type);
 

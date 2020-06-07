@@ -150,6 +150,23 @@ DWidgetSignalReturn dWidgetSignalInvoke(const DWidgetSignalEvent *event) {
 	return DWidgetSignalReturnContinue;
 }
 
+void dWidgetDebug(const DWidget *widget, int indentation) {
+	assert(widget!=NULL);
+	assert(indentation>=0);
+
+	// Debug this widget itself
+	for(int i=0; i<indentation; ++i)
+		printf(" ");
+	printf("%s %p\n", dWidgetTypeToString(dWidgetGetBaseType(widget)), widget);
+
+	// If this is a container, recurse to handle children
+	if (dWidgetGetHasType(widget, DWidgetTypeContainer)) {
+		size_t childCount=dContainerGetChildCount(widget);
+		for(size_t i=0; i<childCount; ++i)
+			dWidgetDebug(dContainerGetChildNConst(widget, i), indentation+2);
+	}
+}
+
 bool dWidgetTypeIsValid(DWidgetType type) {
 	return (type>=0 && type<DWidgetTypeNB);
 }
