@@ -158,7 +158,9 @@ void dWidgetDebug(const DWidget *widget, int indentation) {
 	// Debug this widget itself
 	for(int i=0; i<indentation; ++i)
 		printf(" ");
-	printf("%s %p\n", dWidgetTypeToString(dWidgetGetBaseType(widget)), widget);
+	printf("%s %p", dWidgetTypeToString(dWidgetGetBaseType(widget)), widget);
+	printf(" (w,h)=(%i,%i)", dWidgetGetWidth(widget), dWidgetGetHeight(widget));
+	printf("\n");
 
 	// If this is a container, recurse to handle children
 	if (dWidgetGetHasType(widget, DWidgetTypeContainer)) {
