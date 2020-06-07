@@ -296,6 +296,8 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 
 	data->vtable.getMinWidth=NULL;
 	data->vtable.getMinHeight=NULL;
+	data->vtable.getWidth=NULL;
+	data->vtable.getHeight=NULL;
 
 	// Type specific logic
 	switch(data->type) {
