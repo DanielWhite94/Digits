@@ -118,6 +118,34 @@ int dWidgetGetHeight(const DWidget *widget) {
 	return 0;
 }
 
+int dWidgetGetChildXOffset(const DWidget *parent, const DWidget *child) {
+	assert(parent!=NULL);
+	assert(child!=NULL);
+	assert(dWidgetGetParentConst(child)==parent);
+
+	DWidgetObjectData *data;
+	for(data=parent->base; data!=NULL; data=data->super)
+		if (data->vtable.getChildXOffset!=NULL)
+			return data->vtable.getChildXOffset(parent, child);
+
+	dFatalError("error: widget %p (%s) has no getChildXOffset vtable entry\n", parent, dWidgetTypeToString(dWidgetGetBaseType(parent)));
+	return 0;
+}
+
+int dWidgetGetChildYOffset(const DWidget *parent, const DWidget *child) {
+	assert(parent!=NULL);
+	assert(child!=NULL);
+	assert(dWidgetGetParentConst(child)==parent);
+
+	DWidgetObjectData *data;
+	for(data=parent->base; data!=NULL; data=data->super)
+		if (data->vtable.getChildYOffset!=NULL)
+			return data->vtable.getChildYOffset(parent, child);
+
+	dFatalError("error: widget %p (%s) has no getChildYOffset vtable entry\n", parent, dWidgetTypeToString(dWidgetGetBaseType(parent)));
+	return 0;
+}
+
 bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData) {
 	assert(widget!=NULL);
 	assert(dWidgetSignalTypeIsValid(type));
@@ -306,6 +334,8 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	data->vtable.getMinHeight=NULL;
 	data->vtable.getWidth=NULL;
 	data->vtable.getHeight=NULL;
+	data->vtable.getChildXOffset=NULL;
+	data->vtable.getChildYOffset=NULL;
 
 	// Type specific logic
 	switch(data->type) {
@@ -314,6 +344,8 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 
 			data->vtable.getWidth=&dBinVTableGetWidth;
 			data->vtable.getHeight=&dBinVTableGetHeight;
+			data->vtable.getChildXOffset=&dBinVTableGetChildXOffset;
+			data->vtable.getChildYOffset=&dBinVTableGetChildYOffset;
 		break;
 		case DWidgetTypeButton:
 			data->super=dWidgetObjectDataNew(DWidgetTypeBin);

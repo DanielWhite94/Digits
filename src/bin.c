@@ -45,3 +45,21 @@ int dBinVTableGetHeight(const DWidget *widget) {
 	const DWidget *child=dBinGetChildConst(widget);
 	return (child!=NULL ? dWidgetGetHeight(child) : 0);
 }
+
+int dBinVTableGetChildXOffset(const DWidget *parent, const DWidget *child) {
+	assert(parent!=NULL);
+	assert(child!=NULL);
+	assert(dWidgetGetParentConst(child)==parent);
+
+	// Single child so never any offset
+	return 0;
+}
+
+int dBinVTableGetChildYOffset(const DWidget *parent, const DWidget *child) {
+	assert(parent!=NULL);
+	assert(child!=NULL);
+	assert(dWidgetGetParentConst(child)==parent);
+
+	// Single child so never any offset
+	return 0;
+}
