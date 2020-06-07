@@ -34,7 +34,7 @@ DWidget *dTextButtonGetLabel(DWidget *button) {
 	DWidget *label=dBinGetChild(button);
 
 	if (label==NULL) {
-		fatalError("error: TextButton %p has no child (expected Label)\n", button);
+		dFatalError("error: TextButton %p has no child (expected Label)\n", button);
 		return NULL;
 	}
 

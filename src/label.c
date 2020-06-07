@@ -37,7 +37,7 @@ void dLabelSetText(DWidget *label, const char *text) {
 	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(label, DWidgetTypeLabel);
 
 	size_t newSize=strlen(text)+1;
-	data->d.label.text=reallocNoFail(data->d.label.text, newSize);
+	data->d.label.text=dReallocNoFail(data->d.label.text, newSize);
 	memcpy(data->d.label.text, text, newSize);
 }
 

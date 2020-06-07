@@ -17,7 +17,7 @@ DWidget *dWidgetNew(DWidgetType type) {
 	assert(dWidgetTypeIsValid(type));
 
 	// Allocate widget memory and init fields
-	DWidget *widget=mallocNoFail(sizeof(DWidget));
+	DWidget *widget=dMallocNoFail(sizeof(DWidget));
 
 	widget->base=NULL;
 	widget->parent=NULL;
@@ -72,7 +72,7 @@ int dWidgetGetMinWidth(const DWidget *widget) {
 		if (data->vtable.getMinWidth!=NULL)
 			return data->vtable.getMinWidth(widget);
 
-	fatalError("error: widget %p has no getMinWidth vtable entry\n", widget);
+	dFatalError("error: widget %p has no getMinWidth vtable entry\n", widget);
 	return 0;
 }
 
@@ -84,7 +84,7 @@ int dWidgetGetMinHeight(const DWidget *widget) {
 		if (data->vtable.getMinHeight!=NULL)
 			return data->vtable.getMinHeight(widget);
 
-	fatalError("error: widget %p has no getMinHeight vtable entry\n", widget);
+	dFatalError("error: widget %p has no getMinHeight vtable entry\n", widget);
 	return 0;
 }
 
@@ -96,7 +96,7 @@ int dWidgetGetWidth(const DWidget *widget) {
 		if (data->vtable.getWidth!=NULL)
 			return data->vtable.getWidth(widget);
 
-	fatalError("error: widget %p has no getWidth vtable entry\n", widget);
+	dFatalError("error: widget %p has no getWidth vtable entry\n", widget);
 	return 0;
 }
 
@@ -108,7 +108,7 @@ int dWidgetGetHeight(const DWidget *widget) {
 		if (data->vtable.getHeight!=NULL)
 			return data->vtable.getHeight(widget);
 
-	fatalError("error: widget %p has no getHeight vtable entry\n", widget);
+	dFatalError("error: widget %p has no getHeight vtable entry\n", widget);
 	return 0;
 }
 
@@ -119,13 +119,13 @@ bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignal
 
 	// Is this a valid type of signal for this widget?
 	if (!dWidgetGetHasType(widget, dWidgetSignalTypeToWidgetType(type))) {
-		warning("warning: can not add signal handler of type %s to widget %p - unsuitable widget type %s\n", dWidgetSignalTypeToString(type), widget, dWidgetTypeToString(dWidgetGetBaseType(widget)));
+		dWarning("warning: can not add signal handler of type %s to widget %p - unsuitable widget type %s\n", dWidgetSignalTypeToString(type), widget, dWidgetTypeToString(dWidgetGetBaseType(widget)));
 		return false;
 	}
 
 	// Have we reached the limit of handlers for this widget and sub class?
 	if (widget->signalsCount[type]>=DWidgetSignalDataMax) {
-		warning("warning: can not add signal handler of type %s to widget %p - max of %u already reached\n", dWidgetSignalTypeToString(type), widget, DWidgetSignalDataMax);
+		dWarning("warning: can not add signal handler of type %s to widget %p - max of %u already reached\n", dWidgetSignalTypeToString(type), widget, DWidgetSignalDataMax);
 		return false;
 	}
 
@@ -235,7 +235,7 @@ DWidgetObjectData *dWidgetGetObjectDataNoFail(DWidget *widget, DWidgetType subTy
 	DWidgetObjectData *data=dWidgetGetObjectData(widget, subType);
 
 	if (data==NULL || data->type!=subType) {
-		fatalError("error: widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
+		dFatalError("error: widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
 		return NULL;
 	}
 
@@ -258,7 +258,7 @@ const DWidgetObjectData *dWidgetGetObjectDataConstNoFail(const DWidget *widget, 
 	const DWidgetObjectData *data=dWidgetGetObjectDataConst(widget, subType);
 
 	if (data==NULL || data->type!=subType) {
-		fatalError("error: widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
+		dFatalError("error: widget %p does not derive from %s as expected\n", widget, dWidgetTypeToString(subType));
 		return NULL;
 	}
 
@@ -291,7 +291,7 @@ int dWidgetVTableGetHeight(const DWidget *widget) {
 
 DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	// Allocate memory and set basic fields
-	DWidgetObjectData *data=mallocNoFail(sizeof(DWidgetObjectData));
+	DWidgetObjectData *data=dMallocNoFail(sizeof(DWidgetObjectData));
 
 	data->type=type;
 	data->super=NULL;
@@ -357,7 +357,7 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	}
 
 	if (data->type!=DWidgetTypeWidget && data->super==NULL)
-		fatalError("error: internal error creating widget - non-base widget with no super instance\n");
+		dFatalError("error: internal error creating widget - non-base widget with no super instance\n");
 
 	return data;
 }

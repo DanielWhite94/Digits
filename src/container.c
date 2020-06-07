@@ -15,7 +15,7 @@ bool dContainerAdd(DWidget *container, DWidget *child) {
 	// Add child to container
 	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(container, DWidgetTypeContainer);
 
-	data->d.container.children=reallocNoFail(data->d.container.children, sizeof(DWidget *)*(data->d.container.childCount+1));
+	data->d.container.children=dReallocNoFail(data->d.container.children, sizeof(DWidget *)*(data->d.container.childCount+1));
 	data->d.container.children[data->d.container.childCount++]=child;
 
 	// Set child's parent to container

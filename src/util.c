@@ -3,43 +3,43 @@
 
 #include "util.h"
 
-void *mallocNoFail(size_t size) {
-	return reallocNoFail(NULL, size);
+void *dMallocNoFail(size_t size) {
+	return dReallocNoFail(NULL, size);
 }
 
-void *reallocNoFail(void *ptr, size_t size) {
+void *dReallocNoFail(void *ptr, size_t size) {
 	ptr=realloc(ptr, size);
 	if (ptr==NULL)
-		fatalError("error: memory allocation failure\n");
+		dFatalError("error: memory allocation failure\n");
 	return ptr;
 }
 
-void fatalError(const char *format, ...) {
+void dFatalError(const char *format, ...) {
 	assert(format!=NULL);
 
 	va_list ap;
 	va_start(ap, format);
-	fatalErrorV(format, ap);
+	dFatalErrorV(format, ap);
 	va_end(ap);
 }
 
-void fatalErrorV(const char *format, va_list ap) {
+void dFatalErrorV(const char *format, va_list ap) {
 	assert(format!=NULL);
 
-	warningV(format, ap);
+	dWarningV(format, ap);
 	abort();
 }
 
-void warning(const char *format, ...) {
+void dWarning(const char *format, ...) {
 	assert(format!=NULL);
 
 	va_list ap;
 	va_start(ap, format);
-	warningV(format, ap);
+	dWarningV(format, ap);
 	va_end(ap);
 }
 
-void warningV(const char *format, va_list ap) {
+void dWarningV(const char *format, va_list ap) {
 	assert(format!=NULL);
 
 	vfprintf(stderr, format, ap);

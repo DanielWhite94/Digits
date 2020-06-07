@@ -67,7 +67,7 @@ void digitsLoopHandleSdlEvents(void) {
 				// Find widget represented by this event's SDL window ID
 				DWidget *windowWidget=digitsGetWidgetFromSdlWindowId(sdlEvent.window.windowID);
 				if (windowWidget==NULL) {
-					warning("warning: could not get window widget for SDL_WINDOWEVENT event, ignoring\n");
+					dWarning("warning: could not get window widget for SDL_WINDOWEVENT event, ignoring\n");
 					break;
 				}
 
@@ -93,19 +93,19 @@ void digitsLoopHandleSdlEvents(void) {
 DWidget *digitsGetWidgetFromSdlWindowId(unsigned id) {
 	SDL_Window *sdlWindow=SDL_GetWindowFromID(id);
 	if (sdlWindow==NULL) {
-		warning("warning: no SDL window with id %u\n", id);
+		dWarning("warning: no SDL window with id %u\n", id);
 		return NULL;
 	}
 
 	DWidget *widget=SDL_GetWindowData(sdlWindow, "widget");
 	if (widget==NULL) {
-		warning("warning: no widget data in SDL window %p (id %u)\n", sdlWindow, id);
+		dWarning("warning: no widget data in SDL window %p (id %u)\n", sdlWindow, id);
 		return NULL;
 	}
 
 	// As an additonal safety check, verify widget is a window
 	if (dWidgetGetBaseType(widget)!=DWidgetTypeWindow) {
-		warning("warning: expected widget of type %s but got %s (widget %p, SDL window %p, id %u)\n", dWidgetTypeToString(DWidgetTypeWindow), dWidgetTypeToString(dWidgetGetBaseType(widget)), widget, sdlWindow, id);
+		dWarning("warning: expected widget of type %s but got %s (widget %p, SDL window %p, id %u)\n", dWidgetTypeToString(DWidgetTypeWindow), dWidgetTypeToString(dWidgetGetBaseType(widget)), widget, sdlWindow, id);
 		return NULL;
 	}
 
