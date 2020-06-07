@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include <SDL2/SDL.h>
+
 #include "util.h"
 
 void *dMallocNoFail(size_t size) {
@@ -45,3 +47,7 @@ void dWarningV(const char *format, va_list ap) {
 	vfprintf(stderr, format, ap);
 }
 
+void dDelayMs(DTimeMs delay) {
+	// TODO: fix this if given delay does not fit in 32 bit unsigned int
+	SDL_Delay(delay);
+}

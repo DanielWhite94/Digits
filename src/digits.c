@@ -1,5 +1,3 @@
-#include <unistd.h>
-
 #include <SDL2/SDL.h>
 
 #include "digits.h"
@@ -50,7 +48,7 @@ void digitsLoop(void) {
 		digitsLoopHandleSdlEvents();
 
 		// Delay to avoid high CPU usage
-		usleep(10);
+		dDelayMs(10);
 	}
 }
 
