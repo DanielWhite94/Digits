@@ -3,6 +3,7 @@
 #include "container.h"
 #include "containerprivate.h"
 #include "util.h"
+#include "widgetprivate.h"
 
 bool dContainerAdd(DWidget *container, DWidget *child) {
 	assert(container!=NULL);

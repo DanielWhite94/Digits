@@ -5,6 +5,7 @@
 #include "label.h"
 #include "textbutton.h"
 #include "util.h"
+#include "widgetprivate.h"
 
 DWidget *dTextButtonGetLabel(DWidget *button); // never fails
 

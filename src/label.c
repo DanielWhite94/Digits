@@ -5,6 +5,7 @@
 #include "label.h"
 #include "labelprivate.h"
 #include "util.h"
+#include "widgetprivate.h"
 
 // TODO: improve this - it is just a hacky way to get width/height functions working without worrying about height-for-width logic
 const int dLabelFontWidth=20;

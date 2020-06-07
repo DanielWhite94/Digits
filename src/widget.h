@@ -55,8 +55,6 @@ typedef enum {
 
 typedef DWidgetSignalReturn (DWidgetSignalHandler)(const DWidgetSignalEvent *event, void *userData);
 
-#include "widgetprivate.h"
-
 void dWidgetFree(DWidget *widget);
 
 DWidget *dWidgetGetParent(DWidget *widget);

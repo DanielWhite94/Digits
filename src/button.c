@@ -1,5 +1,9 @@
+#include <assert.h>
+
 #include "bin.h"
 #include "button.h"
+#include "util.h"
+#include "widgetprivate.h"
 
 DWidget *dButtonNew(DWidget *child) {
 	// Create widget instance

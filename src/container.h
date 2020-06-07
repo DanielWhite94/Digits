@@ -2,6 +2,7 @@
 #define CONTAINER_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #include "widget.h"
 

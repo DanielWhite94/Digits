@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "widgetprivate.h"
 #include "window.h"
 #include "windowprivate.h"
 

@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -8,6 +9,7 @@
 #include "labelprivate.h"
 #include "util.h"
 #include "widget.h"
+#include "widgetprivate.h"
 #include "windowprivate.h"
 
 DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type);
