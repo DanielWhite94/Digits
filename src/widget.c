@@ -8,6 +8,7 @@
 #include "labelprivate.h"
 #include "util.h"
 #include "widget.h"
+#include "windowprivate.h"
 
 DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type);
 void dWidgetObjectDataFree(DWidgetObjectData *data);
@@ -334,6 +335,9 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
 
 			data->d.window.sdlWindow=NULL;
+
+			data->vtable.getWidth=&dWindowVTableGetWidth;
+			data->vtable.getHeight=&dWindowVTableGetHeight;
 		break;
 		case DWidgetTypeWidget:
 			// This is the only type which does not inherit from any other
