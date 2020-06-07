@@ -78,7 +78,7 @@ int dWidgetGetMinWidth(const DWidget *widget) {
 		if (data->vtable.getMinWidth!=NULL)
 			return data->vtable.getMinWidth(widget);
 
-	dFatalError("error: widget %p has no getMinWidth vtable entry\n", widget);
+	dFatalError("error: widget %p (%s) has no getMinWidth vtable entry\n", widget, dWidgetTypeToString(dWidgetGetBaseType(widget)));
 	return 0;
 }
 
@@ -90,7 +90,7 @@ int dWidgetGetMinHeight(const DWidget *widget) {
 		if (data->vtable.getMinHeight!=NULL)
 			return data->vtable.getMinHeight(widget);
 
-	dFatalError("error: widget %p has no getMinHeight vtable entry\n", widget);
+	dFatalError("error: widget %p (%s) has no getMinHeight vtable entry\n", widget, dWidgetTypeToString(dWidgetGetBaseType(widget)));
 	return 0;
 }
 
@@ -102,7 +102,7 @@ int dWidgetGetWidth(const DWidget *widget) {
 		if (data->vtable.getWidth!=NULL)
 			return data->vtable.getWidth(widget);
 
-	dFatalError("error: widget %p has no getWidth vtable entry\n", widget);
+	dFatalError("error: widget %p (%s) has no getWidth vtable entry\n", widget, dWidgetTypeToString(dWidgetGetBaseType(widget)));
 	return 0;
 }
 
@@ -114,7 +114,7 @@ int dWidgetGetHeight(const DWidget *widget) {
 		if (data->vtable.getHeight!=NULL)
 			return data->vtable.getHeight(widget);
 
-	dFatalError("error: widget %p has no getHeight vtable entry\n", widget);
+	dFatalError("error: widget %p (%s) has no getHeight vtable entry\n", widget, dWidgetTypeToString(dWidgetGetBaseType(widget)));
 	return 0;
 }
 
