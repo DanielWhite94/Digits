@@ -40,6 +40,7 @@ typedef DWidgetSignalReturn (DWidgetSignalHandler)(const DWidgetSignalEvent *eve
 void dWidgetFree(DWidget *widget);
 
 DWidget *dWidgetGetParent(DWidget *widget);
+const DWidget *dWidgetGetParentConst(const DWidget *widget);
 DWidgetType dWidgetGetBaseType(const DWidget *widget);
 bool dWidgetGetHasType(const DWidget *widget, DWidgetType type); // does the base type, or any of the derived types match the type given?
 int dWidgetGetMinWidth(const DWidget *widget);

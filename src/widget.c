@@ -47,6 +47,12 @@ DWidget *dWidgetGetParent(DWidget *widget) {
 	return widget->parent;
 }
 
+const DWidget *dWidgetGetParentConst(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	return widget->parent;
+}
+
 DWidgetType dWidgetGetBaseType(const DWidget *widget) {
 	assert(widget!=NULL);
 
