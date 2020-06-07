@@ -17,14 +17,34 @@ typedef enum {
 typedef struct DWidget DWidget;
 
 typedef enum {
+	DWidgetSignalTypeWidgetButtonPress, // note: this and WidgetButtonRelease may not come in pairs if the mouse is dragged while pressed
+	DWidgetSignalTypeWidgetButtonRelease,
 	DWidgetSignalTypeWindowClose,
 	DWidgetSignalTypeNB,
 } DWidgetSignalType;
+
+typedef enum {
+	DWidgetMouseButtonLeft,
+	DWidgetMouseButtonMiddle,
+	DWidgetMouseButtonRight,
+	DWidgetMouseButtonX1,
+	DWidgetMouseButtonX2,
+} DWidgetMouseButton;
+
+typedef struct {
+	DWidgetMouseButton button;
+} DWidgetSignalEventWidgetButtonPress;
+
+typedef struct {
+	DWidgetMouseButton button;
+} DWidgetSignalEventWidgetButtonRelease;
 
 typedef struct {
 	DWidgetSignalType type;
 	DWidget *widget;
 	union {
+		DWidgetSignalEventWidgetButtonPress widgetButtonPress;
+		DWidgetSignalEventWidgetButtonRelease widgetButtonRelease;
 	} d;
 } DWidgetSignalEvent;
 

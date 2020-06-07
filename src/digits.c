@@ -63,6 +63,62 @@ void digitsLoopHandleSdlEvents(void) {
 	SDL_Event sdlEvent;
 	while(SDL_PollEvent(&sdlEvent)) {
 		switch(sdlEvent.type) {
+			case SDL_MOUSEBUTTONDOWN: {
+				// Find widget represented by this event's SDL window ID
+				DWidget *windowWidget=digitsGetWidgetFromSdlWindowId(sdlEvent.button.windowID);
+				if (windowWidget==NULL) {
+					dWarning("warning: could not get window widget for SDL_MOUSEBUTTONDOWN event, ignoring\n");
+					break;
+				}
+
+				// Find widget within the window which is actually under the mouse
+				DWidget *targetWidget=dWidgetGetWidgetByXY(windowWidget, sdlEvent.button.x, sdlEvent.button.y);
+				if (targetWidget==NULL) {
+					dWarning("warning: could not get target widget for SDL_MOUSEBUTTONDOWN event at (%i,%i), ignoring\n", sdlEvent.button.x, sdlEvent.button.y);
+					break;
+				}
+
+				// Invoke widget button press signal
+				// Do this recursively up the widget tree until a handler 'accepts' it by returning Stop
+				DWidgetSignalEvent dEvent;
+				dEvent.type=DWidgetSignalTypeWidgetButtonPress;
+				dEvent.d.widgetButtonPress.button=sdlEvent.button.button;
+				while(targetWidget!=NULL) {
+					dEvent.widget=targetWidget;
+					if (dWidgetSignalInvoke(&dEvent)==DWidgetSignalReturnStop)
+						break;
+
+					targetWidget=dWidgetGetParent(targetWidget);
+				}
+			} break;
+			case SDL_MOUSEBUTTONUP: {
+				// Find widget represented by this event's SDL window ID
+				DWidget *windowWidget=digitsGetWidgetFromSdlWindowId(sdlEvent.button.windowID);
+				if (windowWidget==NULL) {
+					dWarning("warning: could not get window widget for SDL_MOUSEBUTTONUP event, ignoring\n");
+					break;
+				}
+
+				// Find widget within the window which is actually under the mouse
+				DWidget *targetWidget=dWidgetGetWidgetByXY(windowWidget, sdlEvent.button.x, sdlEvent.button.y);
+				if (targetWidget==NULL) {
+					dWarning("warning: could not get target widget for SDL_MOUSEBUTTONUP event at (%i,%i), ignoring\n", sdlEvent.button.x, sdlEvent.button.y);
+					break;
+				}
+
+				// Invoke widget button release signal
+				// Do this recursively up the widget tree until a handler 'accepts' it by returning Stop
+				DWidgetSignalEvent dEvent;
+				dEvent.type=DWidgetSignalTypeWidgetButtonRelease;
+				dEvent.d.widgetButtonPress.button=sdlEvent.button.button;
+				while(targetWidget!=NULL) {
+					dEvent.widget=targetWidget;
+					if (dWidgetSignalInvoke(&dEvent)==DWidgetSignalReturnStop)
+						break;
+
+					targetWidget=dWidgetGetParent(targetWidget);
+				}
+			} break;
 			case SDL_WINDOWEVENT: {
 				// Find widget represented by this event's SDL window ID
 				DWidget *windowWidget=digitsGetWidgetFromSdlWindowId(sdlEvent.window.windowID);
