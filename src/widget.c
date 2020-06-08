@@ -79,6 +79,23 @@ void dWidgetDestructor(DWidget *widget, DWidgetObjectData *data) {
 	}
 }
 
+void dWidgetRedraw(DWidget *widget, DWidgetObjectData *data, SDL_Renderer *renderer) {
+	assert(widget!=NULL);
+	// data can be NULL
+	assert(renderer!=NULL);
+
+	// Call first redraw functor we find (if any),
+	// starting from the given sub class
+	while(data!=NULL) {
+		if (data->vtable.redraw!=NULL) {
+			data->vtable.redraw(widget, renderer);
+			break;
+		}
+
+		data=data->super;
+	}
+}
+
 void dWidgetFree(DWidget *widget) {
 	// NULL check
 	if (widget==NULL)
@@ -453,6 +470,7 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	data->super=NULL;
 
 	data->vtable.destructor=NULL;
+	data->vtable.redraw=NULL;
 	data->vtable.getMinWidth=NULL;
 	data->vtable.getMinHeight=NULL;
 	data->vtable.getWidth=NULL;

@@ -5,11 +5,15 @@
 
 #include "binprivate.h"
 #include "util.h"
+#include "utilprivate.h"
 #include "widgetprivate.h"
 #include "window.h"
 #include "windowprivate.h"
 
+const DColour dWindowBackgroundColour={.r=32, .g=32, .b=32, .a=255};
+
 void dWindowVTableDestructor(DWidget *widget);
+void dWindowVTableRedraw(DWidget *widget, SDL_Renderer *renderer);
 int dWindowVTableGetWidth(const DWidget *widget);
 int dWindowVTableGetHeight(const DWidget *widget);
 
@@ -40,6 +44,7 @@ void dWindowConstructor(DWidget *widget, DWidgetObjectData *data, const char *ti
 
 	// Init fields
 	data->d.window.sdlWindow=NULL;
+	data->d.window.renderer=NULL;
 
 	// Create SDL backing window and add some custom data to point back to our widget
 	data->d.window.sdlWindow=SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
@@ -48,8 +53,14 @@ void dWindowConstructor(DWidget *widget, DWidgetObjectData *data, const char *ti
 
 	SDL_SetWindowData(data->d.window.sdlWindow, "widget", widget);
 
+	// Create SDL renderer for widget drawing
+	data->d.window.renderer=SDL_CreateRenderer(data->d.window.sdlWindow, -1, SDL_RENDERER_ACCELERATED);
+	if (data->d.window.renderer==NULL)
+		dFatalError("error: could not create SDL renderer for widget %p\n", widget);
+
 	// Setup vtable
 	data->vtable.destructor=&dWindowVTableDestructor;
+	data->vtable.redraw=&dWindowVTableRedraw;
 	data->vtable.getWidth=&dWindowVTableGetWidth;
 	data->vtable.getHeight=&dWindowVTableGetHeight;
 }
@@ -62,17 +73,44 @@ const char *dWindowGetTitle(const DWidget *widget) {
 	return SDL_GetWindowTitle(data->d.window.sdlWindow);
 }
 
+SDL_Renderer *dWindowGetRenderer(DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWindow);
+
+	return data->d.window.renderer;
+}
+
 void dWindowVTableDestructor(DWidget *widget) {
 	assert(widget!=NULL);
 
 	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWindow);
 
-	// Destry SDL window
+	// Destry SDL window and renderer
+	if (data->d.window.renderer!=NULL)
+		SDL_DestroyRenderer(data->d.window.renderer);
 	if (data->d.window.sdlWindow!=NULL)
 		SDL_DestroyWindow(data->d.window.sdlWindow);
 
 	// Call super destructor
 	dWidgetDestructor(widget, data->super);
+}
+
+void dWindowVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
+	assert(widget!=NULL);
+	assert(renderer!=NULL);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWindow);
+
+	// Clear entire window to background colour
+	dSetRenderDrawColour(renderer, &dWindowBackgroundColour);
+	SDL_RenderClear(renderer);
+
+	// Call super redraw
+	dWidgetRedraw(widget, data->super, renderer);
+
+	// Update screen
+	SDL_RenderPresent(renderer);
 }
 
 int dWindowVTableGetWidth(const DWidget *widget) {

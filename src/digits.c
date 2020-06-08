@@ -2,6 +2,7 @@
 
 #include "digits.h"
 #include "util.h"
+#include "windowprivate.h"
 
 bool digitsInitFlag=false;
 bool digitsQuitFlag=false;
@@ -127,6 +128,10 @@ void digitsLoopHandleSdlEvents(void) {
 
 				// Event specific logic
 				switch(sdlEvent.window.event) {
+					case SDL_WINDOWEVENT_EXPOSED:
+						// Call redraw on window
+						dWidgetRedraw(windowWidget, windowWidget->base, dWindowGetRenderer(windowWidget));
+					break;
 					case SDL_WINDOWEVENT_CLOSE: {
 						// Invoke window close signal
 						DWidgetSignalEvent dEvent;
