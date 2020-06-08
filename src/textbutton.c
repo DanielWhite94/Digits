@@ -2,8 +2,10 @@
 #include <stdlib.h>
 
 #include "bin.h"
+#include "buttonprivate.h"
 #include "label.h"
 #include "textbutton.h"
+#include "textbuttonprivate.h"
 #include "util.h"
 #include "widgetprivate.h"
 
@@ -15,10 +17,21 @@ DWidget *dTextButtonNew(const char *text) {
 	// Create widget instance
 	DWidget *button=dWidgetNew(DWidgetTypeTextButton);
 
-	// Add a label with given text
-	dBinAdd(button, dLabelNew(text));
+	// Call constructor
+	dTextButtonConstructor(button, button->base, text);
 
 	return button;
+}
+
+void dTextButtonConstructor(DWidget *widget, DWidgetObjectData *data, const char *text) {
+	assert(widget!=NULL);
+	assert(data!=NULL);
+	assert(data->type==DWidgetTypeTextButton);
+	assert(text!=NULL);
+
+	// Call super constructor first
+	// Also might as well add label at the same time
+	dButtonConstructor(widget, data->super, dLabelNew(text));
 }
 
 void dTextButtonSetText(DWidget *button, const char *text) {

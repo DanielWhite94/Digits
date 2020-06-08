@@ -7,6 +7,7 @@
 
 #define DWidgetSignalDataMax 16
 
+typedef void (DWidgetVTableDestructor)(DWidget *widget);
 typedef int (DWidgetVTableGetMinWidth)(const DWidget *widget);
 typedef int (DWidgetVTableGetMinHeight)(const DWidget *widget);
 typedef int (DWidgetVTableGetWidth)(const DWidget *widget);
@@ -15,6 +16,7 @@ typedef int (DWidgetVTableGetChildXOffset)(const DWidget *parent, const DWidget 
 typedef int (DWidgetVTableGetChildYOffset)(const DWidget *parent, const DWidget *child);
 
 typedef struct {
+	DWidgetVTableDestructor *destructor;
 	DWidgetVTableGetMinWidth *getMinWidth;
 	DWidgetVTableGetMinHeight *getMinHeight;
 	DWidgetVTableGetWidth *getWidth;
@@ -63,16 +65,13 @@ struct DWidget {
 };
 
 DWidget *dWidgetNew(DWidgetType type);
+void dWidgetConstructor(DWidget *widget, DWidgetObjectData *data);
+void dWidgetDestructor(DWidget *widget, DWidgetObjectData *data); // starts from data sub class when searching for vtable entries (if data is NULL then function does nothing)
 
 DWidgetObjectData *dWidgetGetObjectData(DWidget *widget, DWidgetType subType);
 DWidgetObjectData *dWidgetGetObjectDataNoFail(DWidget *widget, DWidgetType subType); // return will never be NULL, and type will always match that given (otherwise program is aborted)
 
 const DWidgetObjectData *dWidgetGetObjectDataConst(const DWidget *widget, DWidgetType subType);
 const DWidgetObjectData *dWidgetGetObjectDataConstNoFail(const DWidget *widget, DWidgetType subType); // return will never be NULL, and type will always match that given (otherwise program is aborted)
-
-int dWidgetVTableGetMinWidth(const DWidget *widget);
-int dWidgetVTableGetMinHeight(const DWidget *widget);
-int dWidgetVTableGetWidth(const DWidget *widget);
-int dWidgetVTableGetHeight(const DWidget *widget);
 
 #endif

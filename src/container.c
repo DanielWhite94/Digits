@@ -5,6 +5,28 @@
 #include "util.h"
 #include "widgetprivate.h"
 
+void dContainerVTableDestructor(DWidget *widget);
+int dContainerVTableGetMinWidth(const DWidget *widget);
+int dContainerVTableGetMinHeight(const DWidget *widget);
+
+void dContainerConstructor(DWidget *widget, DWidgetObjectData *data) {
+	assert(widget!=NULL);
+	assert(data!=NULL);
+	assert(data->type==DWidgetTypeContainer);
+
+	// Call super constructor first
+	dWidgetConstructor(widget, data->super);
+
+	// Init fields
+	data->d.container.children=NULL;
+	data->d.container.childCount=0;
+
+	// Setup vtable
+	data->vtable.destructor=&dContainerVTableDestructor;
+	data->vtable.getMinWidth=&dContainerVTableGetMinWidth;
+	data->vtable.getMinHeight=&dContainerVTableGetMinHeight;
+}
+
 bool dContainerAdd(DWidget *container, DWidget *child) {
 	assert(container!=NULL);
 	assert(child!=NULL);
@@ -53,6 +75,18 @@ size_t dContainerGetChildCount(const DWidget *container) {
 	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(container, DWidgetTypeContainer);
 
 	return data->d.container.childCount;
+}
+
+void dContainerVTableDestructor(DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeContainer);
+
+	// Free memory
+	free(data->d.container.children);
+
+	// Call super destructor
+	dWidgetDestructor(widget, data->super);
 }
 
 int dContainerVTableGetMinWidth(const DWidget *widget) {

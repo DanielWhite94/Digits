@@ -3,7 +3,6 @@
 
 #include "widget.h"
 
-int dWindowVTableGetWidth(const DWidget *widget);
-int dWindowVTableGetHeight(const DWidget *widget);
+void dWindowConstructor(DWidget *widget, DWidgetObjectData *data, const char *title, int width, int height);
 
 #endif

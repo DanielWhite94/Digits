@@ -1,9 +1,8 @@
 #ifndef CONTAINERPRIVATE_H
 #define CONTAINERPRIVATE_H
 
-#include "widget.h"
+#include "widgetprivate.h"
 
-int dContainerVTableGetMinWidth(const DWidget *widget);
-int dContainerVTableGetMinHeight(const DWidget *widget);
+void dContainerConstructor(DWidget *widget, DWidgetObjectData *data);
 
 #endif

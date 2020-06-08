@@ -11,16 +11,46 @@
 const int dLabelFontWidth=20;
 const int dLabelFontHeight=10;
 
+void dLabelVTableDestructor(DWidget *widget);
+int dLabelVTableGetMinWidth(const DWidget *widget);
+int dLabelVTableGetMinHeight(const DWidget *widget);
+int dLabelVTableGetWidth(const DWidget *widget);
+int dLabelVTableGetHeight(const DWidget *widget);
+
 DWidget *dLabelNew(const char *text) {
 	assert(text!=NULL);
 
 	// Create widget instance
 	DWidget *label=dWidgetNew(DWidgetTypeLabel);
 
-	// Set text
-	dLabelSetText(label, text);
+	// Call constructor
+	dLabelConstructor(label, label->base, text);
 
 	return label;
+}
+
+void dLabelConstructor(DWidget *widget, DWidgetObjectData *data, const char *text) {
+	assert(widget!=NULL);
+	assert(data!=NULL);
+	assert(data->type==DWidgetTypeLabel);
+	assert(text!=NULL);
+
+	// Call super constructor first
+	dWidgetConstructor(widget, data->super);
+
+	// Init fields
+	data->d.label.text=dMallocNoFail(1);
+	data->d.label.text[0]='\0';
+
+	// Setup vtable
+	data->vtable.destructor=&dLabelVTableDestructor;
+	data->vtable.getMinWidth=&dLabelVTableGetMinWidth;
+	data->vtable.getMinHeight=&dLabelVTableGetMinHeight;
+	data->vtable.getWidth=&dLabelVTableGetWidth;
+	data->vtable.getHeight=&dLabelVTableGetHeight;
+
+	// Set text
+	dLabelSetText(widget, text);
 }
 
 const char *dLabelGetText(const DWidget *label) {
@@ -40,6 +70,18 @@ void dLabelSetText(DWidget *label, const char *text) {
 	size_t newSize=strlen(text)+1;
 	data->d.label.text=dReallocNoFail(data->d.label.text, newSize);
 	memcpy(data->d.label.text, text, newSize);
+}
+
+void dLabelVTableDestructor(DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeLabel);
+
+	// Free memory
+	free(data->d.label.text);
+
+	// Call super destructor
+	dWidgetDestructor(widget, data->super);
 }
 
 int dLabelVTableGetMinWidth(const DWidget *widget) {

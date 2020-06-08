@@ -4,6 +4,12 @@
 #include "bin.h"
 #include "binprivate.h"
 #include "container.h"
+#include "containerprivate.h"
+
+int dBinVTableGetWidth(const DWidget *widget);
+int dBinVTableGetHeight(const DWidget *widget);
+int dBinVTableGetChildXOffset(const DWidget *parent, const DWidget *child);
+int dBinVTableGetChildYOffset(const DWidget *parent, const DWidget *child);
 
 bool dBinAdd(DWidget *bin, DWidget *child) {
 	assert(bin!=NULL);
@@ -16,6 +22,26 @@ bool dBinAdd(DWidget *bin, DWidget *child) {
 	// Otherwise attempt to add child to container
 	return dContainerAdd(bin, child);
 }
+
+void dBinConstructor(DWidget *widget, DWidgetObjectData *data, DWidget *child) {
+	assert(widget!=NULL);
+	assert(data!=NULL);
+	assert(data->type==DWidgetTypeBin);
+
+	// Call super constructor first
+	dContainerConstructor(widget, data->super);
+
+	// Setup vtable
+	data->vtable.getWidth=&dBinVTableGetWidth;
+	data->vtable.getHeight=&dBinVTableGetHeight;
+	data->vtable.getChildXOffset=&dBinVTableGetChildXOffset;
+	data->vtable.getChildYOffset=&dBinVTableGetChildYOffset;
+
+	// Add child if given
+	if (child!=NULL)
+		dBinAdd(widget, child);
+}
+// TODO: consider if we need a destructor to remove data->d.bin.child
 
 DWidget *dBinGetChild(DWidget *bin) {
 	assert(bin!=NULL);

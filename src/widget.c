@@ -12,6 +12,23 @@
 #include "widgetprivate.h"
 #include "windowprivate.h"
 
+// This is an array showing what widgets are derived from
+// DWidgetTypeNB indicates does not extend anything, which should only be the case for DWidgetTypeWidget
+static const DWidgetType dWidgetTypeExtends[DWidgetTypeNB]={
+	[DWidgetTypeBin]=DWidgetTypeContainer,
+	[DWidgetTypeButton]=DWidgetTypeBin,
+	[DWidgetTypeContainer]=DWidgetTypeWidget,
+	[DWidgetTypeLabel]=DWidgetTypeWidget,
+	[DWidgetTypeTextButton]=DWidgetTypeButton,
+	[DWidgetTypeWindow]=DWidgetTypeBin,
+	[DWidgetTypeWidget]=DWidgetTypeNB,
+};
+
+int dWidgetVTableGetMinWidth(const DWidget *widget);
+int dWidgetVTableGetMinHeight(const DWidget *widget);
+int dWidgetVTableGetWidth(const DWidget *widget);
+int dWidgetVTableGetHeight(const DWidget *widget);
+
 DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type);
 void dWidgetObjectDataFree(DWidgetObjectData *data);
 
@@ -25,16 +42,50 @@ DWidget *dWidgetNew(DWidgetType type) {
 	widget->parent=NULL;
 	memset(widget->signalsCount, 0, sizeof(widget->signalsCount[0])*DWidgetSignalTypeNB);
 
-	// Initialise base object (and any other it derives from)
+	// Initialise all sub classes - base one and any others it derives from
 	widget->base=dWidgetObjectDataNew(type);
 
 	return widget;
+}
+
+void dWidgetConstructor(DWidget *widget, DWidgetObjectData *data) {
+	assert(widget!=NULL);
+	assert(data!=NULL);
+	assert(data->type==DWidgetTypeWidget);
+
+	// Note: this class does not derive from any and so does not need to call another constructor
+	assert(data->super==NULL);
+
+	// Setup vtable
+	data->vtable.getMinWidth=&dWidgetVTableGetMinWidth;
+	data->vtable.getMinHeight=&dWidgetVTableGetMinHeight;
+	data->vtable.getWidth=&dWidgetVTableGetWidth;
+	data->vtable.getHeight=&dWidgetVTableGetHeight;
+}
+
+void dWidgetDestructor(DWidget *widget, DWidgetObjectData *data) {
+	assert(widget!=NULL);
+	// data can be NULL
+
+	// Call first destructor we find (if any),
+	// starting from the given sub class
+	while(data!=NULL) {
+		if (data->vtable.destructor!=NULL) {
+			data->vtable.destructor(widget);
+			break;
+		}
+
+		data=data->super;
+	}
 }
 
 void dWidgetFree(DWidget *widget) {
 	// NULL check
 	if (widget==NULL)
 		return;
+
+	// Call first destructor we find (if any), starting with the base class
+	dWidgetDestructor(widget, widget->base);
 
 	// Free base object (and any others it derives from)
 	dWidgetObjectDataFree(widget->base);
@@ -393,6 +444,7 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	data->type=type;
 	data->super=NULL;
 
+	data->vtable.destructor=NULL;
 	data->vtable.getMinWidth=NULL;
 	data->vtable.getMinHeight=NULL;
 	data->vtable.getWidth=NULL;
@@ -400,65 +452,11 @@ DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {
 	data->vtable.getChildXOffset=NULL;
 	data->vtable.getChildYOffset=NULL;
 
-	// Type specific logic
-	switch(data->type) {
-		case DWidgetTypeBin:
-			data->super=dWidgetObjectDataNew(DWidgetTypeContainer);
-
-			data->vtable.getWidth=&dBinVTableGetWidth;
-			data->vtable.getHeight=&dBinVTableGetHeight;
-			data->vtable.getChildXOffset=&dBinVTableGetChildXOffset;
-			data->vtable.getChildYOffset=&dBinVTableGetChildYOffset;
-		break;
-		case DWidgetTypeButton:
-			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
-		break;
-		case DWidgetTypeContainer:
-			data->super=dWidgetObjectDataNew(DWidgetTypeWidget);
-
-			data->d.container.children=NULL;
-			data->d.container.childCount=0;
-
-			data->vtable.getMinWidth=&dContainerVTableGetMinWidth;
-			data->vtable.getMinHeight=&dContainerVTableGetMinHeight;
-		break;
-		case DWidgetTypeLabel:
-			data->super=dWidgetObjectDataNew(DWidgetTypeWidget);
-
-			data->d.label.text=malloc(1);
-			data->d.label.text[0]='\0';
-
-			data->vtable.getMinWidth=&dLabelVTableGetMinWidth;
-			data->vtable.getMinHeight=&dLabelVTableGetMinHeight;
-			data->vtable.getWidth=&dLabelVTableGetWidth;
-			data->vtable.getHeight=&dLabelVTableGetHeight;
-		break;
-		case DWidgetTypeTextButton:
-			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
-		break;
-		case DWidgetTypeWindow:
-			data->super=dWidgetObjectDataNew(DWidgetTypeBin);
-
-			data->d.window.sdlWindow=NULL;
-
-			data->vtable.getWidth=&dWindowVTableGetWidth;
-			data->vtable.getHeight=&dWindowVTableGetHeight;
-		break;
-		case DWidgetTypeWidget:
-			// This is the only type which does not inherit from any other
-
-			data->vtable.getMinWidth=&dWidgetVTableGetMinWidth;
-			data->vtable.getMinHeight=&dWidgetVTableGetMinHeight;
-			data->vtable.getWidth=&dWidgetVTableGetWidth;
-			data->vtable.getHeight=&dWidgetVTableGetHeight;
-		break;
-		case DWidgetTypeNB:
-			assert(false);
-		break;
-	}
-
-	if (data->type!=DWidgetTypeWidget && data->super==NULL)
-		dFatalError("error: internal error creating widget - non-base widget with no super instance\n");
+	// Create and init super class if needed
+	// note: this recurses until we hit DWidgetTypeWidget
+	DWidgetType superType=dWidgetTypeExtends[type];
+	if (superType!=DWidgetTypeNB)
+		data->super=dWidgetObjectDataNew(superType);
 
 	return data;
 }
@@ -467,32 +465,6 @@ void dWidgetObjectDataFree(DWidgetObjectData *data) {
 	// NULL check
 	if (data==NULL)
 		return;
-
-	// Type-specific logic
-	switch(data->type) {
-		case DWidgetTypeBin:
-			// TODO: consider data->d.bin.child - should be removed before this point anyway?
-		break;
-		case DWidgetTypeButton:
-		break;
-		case DWidgetTypeContainer:
-			free(data->d.container.children);
-		break;
-		case DWidgetTypeLabel:
-			free(data->d.label.text);
-		break;
-		case DWidgetTypeTextButton:
-		break;
-		case DWidgetTypeWindow:
-			if (data->d.window.sdlWindow!=NULL)
-				SDL_DestroyWindow(data->d.window.sdlWindow);
-		break;
-		case DWidgetTypeWidget:
-		break;
-		case DWidgetTypeNB:
-			assert(false);
-		break;
-	}
 
 	// Free super object (if any)
 	dWidgetObjectDataFree(data->super);
