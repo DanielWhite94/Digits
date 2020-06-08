@@ -338,6 +338,8 @@ bool dWidgetSignalTypeIsValid(DWidgetSignalType type) {
 static const char *dWidgetSignalTypeStrings[]={
 	[DWidgetSignalTypeWidgetButtonPress]="WidgetButtonPress",
 	[DWidgetSignalTypeWidgetButtonRelease]="WidgetButtonRelease",
+	[DWidgetSignalTypeWidgetEnter]="WidgetEnter",
+	[DWidgetSignalTypeWidgetLeave]="WidgetLeave",
 	[DWidgetSignalTypeWindowClose]="WindowClose",
 };
 const char *dWidgetSignalTypeToString(DWidgetSignalType type) {
@@ -352,6 +354,8 @@ DWidgetType dWidgetSignalTypeToWidgetType(DWidgetSignalType type) {
 	switch(type) {
 		case DWidgetSignalTypeWidgetButtonPress:
 		case DWidgetSignalTypeWidgetButtonRelease:
+		case DWidgetSignalTypeWidgetEnter:
+		case DWidgetSignalTypeWidgetLeave:
 			return DWidgetTypeWidget;
 		break;
 		case DWidgetSignalTypeWindowClose:
