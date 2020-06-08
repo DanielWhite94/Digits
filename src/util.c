@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "util.h"
+#include "utilprivate.h"
 
 void *dMallocNoFail(size_t size) {
 	return dReallocNoFail(NULL, size);
@@ -50,4 +51,11 @@ void dWarningV(const char *format, va_list ap) {
 void dDelayMs(DTimeMs delay) {
 	// TODO: fix this if given delay does not fit in 32 bit unsigned int
 	SDL_Delay(delay);
+}
+
+void dSetRenderDrawColour(SDL_Renderer *renderer, const DColour *colour) {
+	assert(renderer!=NULL);
+	assert(colour!=NULL);
+
+	SDL_SetRenderDrawColor(renderer, colour->r, colour->g, colour->b, colour->a);
 }

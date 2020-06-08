@@ -7,6 +7,10 @@
 
 typedef uint64_t DTimeMs;
 
+typedef struct {
+	uint8_t r, g, b, a; // values in range 0-255
+} DColour;
+
 void *dMallocNoFail(size_t size);
 void *dReallocNoFail(void *ptr, size_t size);
 
