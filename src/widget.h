@@ -17,6 +17,7 @@ typedef enum {
 typedef struct DWidget DWidget;
 
 typedef enum {
+	DWidgetSignalTypeButtonClick,
 	DWidgetSignalTypeWidgetButtonPress, // note: this and WidgetButtonRelease may not come in pairs if the mouse is dragged while pressed
 	DWidgetSignalTypeWidgetButtonRelease,
 	DWidgetSignalTypeWidgetEnter, // cursor has entered this widget
