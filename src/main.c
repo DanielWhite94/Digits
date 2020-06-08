@@ -6,6 +6,7 @@
 #include "digits.h"
 
 DWidgetSignalReturn windowCloseHandler(const DWidgetSignalEvent *event, void *userData);
+DWidgetSignalReturn buttonClickHandler(const DWidgetSignalEvent *event, void *userData);
 
 int main(int argc, char **argv) {
 	// Initialise widget system
@@ -28,6 +29,8 @@ int main(int argc, char **argv) {
 	// Connect signals
 	dWidgetSignalConnect(window, DWidgetSignalTypeWindowClose, &windowCloseHandler, NULL);
 	dWidgetSignalConnect(window2, DWidgetSignalTypeWindowClose, &windowCloseHandler, NULL);
+
+	dWidgetSignalConnect(button, DWidgetSignalTypeButtonClick, &buttonClickHandler, NULL);
 
 	// Debugging
 	dWidgetDebug(window, 0);
@@ -53,4 +56,14 @@ DWidgetSignalReturn windowCloseHandler(const DWidgetSignalEvent *event, void *us
 	digitsLoopStop();
 
 	return DWidgetSignalReturnContinue;
+}
+
+DWidgetSignalReturn buttonClickHandler(const DWidgetSignalEvent *event, void *userData) {
+	assert(event!=NULL);
+	assert(event->type==DWidgetSignalTypeButtonClick);
+	assert(userData==NULL);
+
+	printf("button click for %p\n", event->widget);
+
+	return DWidgetSignalReturnStop;
 }
