@@ -26,6 +26,10 @@ typedef struct {
 } DWidgetVTable;
 
 typedef struct {
+	bool pressed; // true if currently held down (i.e. mid click)
+} DWidgetObjectDataButton;
+
+typedef struct {
 	DWidget **children;
 	size_t childCount;
 } DWidgetObjectDataContainer;
@@ -43,6 +47,7 @@ struct DWidgetObjectData {
 	DWidgetType type;
 	DWidgetObjectData *super;
 	union {
+		DWidgetObjectDataButton button;
 		DWidgetObjectDataContainer container;
 		DWidgetObjectDataLabel label;
 		DWidgetObjectDataWindow window;
