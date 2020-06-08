@@ -6,6 +6,7 @@
 #include "widgetprivate.h"
 
 void dContainerVTableDestructor(DWidget *widget);
+void dContainerVTableRedraw(DWidget *widget, SDL_Renderer *renderer);
 int dContainerVTableGetMinWidth(const DWidget *widget);
 int dContainerVTableGetMinHeight(const DWidget *widget);
 
@@ -23,6 +24,7 @@ void dContainerConstructor(DWidget *widget, DWidgetObjectData *data) {
 
 	// Setup vtable
 	data->vtable.destructor=&dContainerVTableDestructor;
+	data->vtable.redraw=&dContainerVTableRedraw;
 	data->vtable.getMinWidth=&dContainerVTableGetMinWidth;
 	data->vtable.getMinHeight=&dContainerVTableGetMinHeight;
 }
@@ -87,6 +89,22 @@ void dContainerVTableDestructor(DWidget *widget) {
 
 	// Call super destructor
 	dWidgetDestructor(widget, data->super);
+}
+
+void dContainerVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
+	assert(widget!=NULL);
+	assert(renderer!=NULL);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeContainer);
+
+	// Call super redraw
+	dWidgetRedraw(widget, data->super, renderer);
+
+	// Loop to draw children
+	for(size_t i=0; i<data->d.container.childCount; ++i) {
+		DWidget *child=data->d.container.children[i];
+		dWidgetRedraw(child, child->base, renderer);
+	}
 }
 
 int dContainerVTableGetMinWidth(const DWidget *widget) {
