@@ -76,6 +76,8 @@ DWidget *dWidgetNew(DWidgetType type);
 void dWidgetConstructor(DWidget *widget, DWidgetObjectData *data);
 void dWidgetDestructor(DWidget *widget, DWidgetObjectData *data); // starts from data sub class when searching for vtable entries (if data is NULL then function does nothing)
 
+SDL_Renderer *dWidgetGetRenderer(DWidget *widget); // returns NULL if not a Window or descendant of a Window
+
 void dWidgetRedraw(DWidget *widget, DWidgetObjectData *data, SDL_Renderer *renderer); // starts from data sub class when searching for vtable entries (if data is NULL then function does nothing)
 
 DWidgetObjectData *dWidgetGetObjectData(DWidget *widget, DWidgetType subType);

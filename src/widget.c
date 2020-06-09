@@ -79,6 +79,16 @@ void dWidgetDestructor(DWidget *widget, DWidgetObjectData *data) {
 	}
 }
 
+SDL_Renderer *dWidgetGetRenderer(DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidget *window=dWidgetGetWindow(widget);
+	if (window==NULL)
+		return NULL;
+
+	return dWindowGetRenderer(window);
+}
+
 void dWidgetRedraw(DWidget *widget, DWidgetObjectData *data, SDL_Renderer *renderer) {
 	assert(widget!=NULL);
 	// data can be NULL
