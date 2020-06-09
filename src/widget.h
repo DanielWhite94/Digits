@@ -64,6 +64,9 @@ DWidget *dWidgetGetParent(DWidget *widget);
 const DWidget *dWidgetGetParentConst(const DWidget *widget);
 DWidgetType dWidgetGetBaseType(const DWidget *widget);
 bool dWidgetGetHasType(const DWidget *widget, DWidgetType type); // does the base type, or any of the derived types match the type given?
+// These two functions return the root Window containing the widget (or NULL if not part of a Window)
+DWidget *dWidgetGetWindow(DWidget *widget);
+const DWidget *dWidgetGetWindowConst(const DWidget *widget);
 DWidget *dWidgetGetWidgetByXY(DWidget *widget, int globalX, int globalY); // x and y are relative to the top left of the root Window
 int dWidgetGetMinWidth(const DWidget *widget);
 int dWidgetGetMinHeight(const DWidget *widget);

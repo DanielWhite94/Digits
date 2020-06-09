@@ -140,6 +140,34 @@ bool dWidgetGetHasType(const DWidget *widget, DWidgetType type) {
 	return false;
 }
 
+DWidget *dWidgetGetWindow(DWidget *widget) {
+	assert(widget!=NULL);
+
+	// Is this widget a window?
+	if (dWidgetGetHasType(widget, DWidgetTypeWindow))
+		return widget;
+
+	// Ask parent widget recursively
+	if (dWidgetGetParent(widget)!=NULL)
+		return dWidgetGetWindow(dWidgetGetParent(widget));
+
+	return NULL;
+}
+
+const DWidget *dWidgetGetWindowConst(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	// Is this widget a window?
+	if (dWidgetGetHasType(widget, DWidgetTypeWindow))
+		return widget;
+
+	// Ask parent widget recursively
+	if (dWidgetGetParentConst(widget)!=NULL)
+		return dWidgetGetWindowConst(dWidgetGetParentConst(widget));
+
+	return NULL;
+}
+
 DWidget *dWidgetGetWidgetByXY(DWidget *widget, int globalX, int globalY) {
 	assert(widget!=NULL);
 
