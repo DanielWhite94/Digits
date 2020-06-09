@@ -1,24 +1,34 @@
+#include <assert.h>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
 #include "digits.h"
+#include "digitsprivate.h"
 #include "util.h"
 #include "windowprivate.h"
 
 bool digitsInitFlag=false;
 bool digitsQuitFlag=false;
 
+DWidget **digitsWindows=NULL;
+size_t digitWindowCount=0;
+
 void digitsLoopHandleSdlEvents(void);
 
 DWidget *digitsGetWidgetFromSdlWindowId(unsigned id);
+
+ssize_t digitsGetWindowIndex(const DWidget *widget); // find index of given window widget in the windows array. returns -1 on failure
 
 bool digitsInit(void) {
 	// Already initialised?
 	if (digitsInitFlag)
 		return true;
 
-	// Update flags
+	// Update fields
 	digitsQuitFlag=false;
+	digitsWindows=NULL;
+	digitWindowCount=0;
 
 	// Initialise SDL
 	if(SDL_Init(SDL_INIT_VIDEO)<0)
@@ -38,6 +48,10 @@ void digitsQuit(void) {
 	// Not even initialised?
 	if (!digitsInitFlag)
 		return;
+
+	// Close open windows and free memory
+	free(digitsWindows);
+	digitsWindows=NULL;
 
 	// Quit SDL
 	TTF_Quit();
@@ -61,6 +75,33 @@ void digitsLoop(void) {
 
 void digitsLoopStop(void) {
 	digitsQuitFlag=true;
+}
+
+
+void digitsRegisterWindow(DWidget *widget) {
+	assert(widget!=NULL);
+	assert(dWidgetGetHasType(widget, DWidgetTypeWindow));
+
+	// Already registered?
+	if (digitsGetWindowIndex(widget)!=-1)
+		return;
+
+	// Add window to array
+	digitsWindows=dReallocNoFail(digitsWindows, sizeof(DWidget *)*(digitWindowCount+1));
+	digitsWindows[digitWindowCount++]=widget;
+}
+
+void digitsDeregisterWindow(DWidget *widget) {
+	assert(widget!=NULL);
+	assert(dWidgetGetHasType(widget, DWidgetTypeWindow));
+
+	// Find index in array
+	ssize_t index=digitsGetWindowIndex(widget);
+	if (index==-1)
+		return;
+
+	// Remove from array by shifting others down and reducing the count
+	memmove(digitsWindows+index, digitsWindows+index+1, (--digitWindowCount)-index);
 }
 
 void digitsLoopHandleSdlEvents(void) {
@@ -176,3 +217,13 @@ DWidget *digitsGetWidgetFromSdlWindowId(unsigned id) {
 
 	return widget;
 }
+
+ssize_t digitsGetWindowIndex(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	for(size_t i=0; i<digitWindowCount; ++i)
+		if (widget==digitsWindows[i])
+			return i;
+	return -1;
+}
+

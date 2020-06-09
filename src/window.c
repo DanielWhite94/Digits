@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "binprivate.h"
+#include "digitsprivate.h"
 #include "util.h"
 #include "utilprivate.h"
 #include "widgetprivate.h"
@@ -63,6 +64,9 @@ void dWindowConstructor(DWidget *widget, DWidgetObjectData *data, const char *ti
 	data->vtable.redraw=&dWindowVTableRedraw;
 	data->vtable.getWidth=&dWindowVTableGetWidth;
 	data->vtable.getHeight=&dWindowVTableGetHeight;
+
+	// Register window so we can keep track of it
+	digitsRegisterWindow(widget);
 }
 
 const char *dWindowGetTitle(const DWidget *widget) {
@@ -94,6 +98,9 @@ void dWindowVTableDestructor(DWidget *widget) {
 
 	// Call super destructor
 	dWidgetDestructor(widget, data->super);
+
+	// Deregister to remove from list of windows
+	digitsDeregisterWindow(widget);
 }
 
 void dWindowVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
