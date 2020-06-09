@@ -6,8 +6,8 @@
 #include "container.h"
 #include "containerprivate.h"
 
-int dBinVTableGetWidth(const DWidget *widget);
-int dBinVTableGetHeight(const DWidget *widget);
+int dBinVTableGetWidth(DWidget *widget);
+int dBinVTableGetHeight(DWidget *widget);
 int dBinVTableGetChildXOffset(const DWidget *parent, const DWidget *child);
 int dBinVTableGetChildYOffset(const DWidget *parent, const DWidget *child);
 
@@ -57,19 +57,19 @@ const DWidget *dBinGetChildConst(const DWidget *bin) {
 	return dContainerGetChildNConst(bin, 0);
 }
 
-int dBinVTableGetWidth(const DWidget *widget) {
+int dBinVTableGetWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
 	// Simply use childs width (or 0 if empty)
-	const DWidget *child=dBinGetChildConst(widget);
+	DWidget *child=dBinGetChild(widget);
 	return (child!=NULL ? dWidgetGetWidth(child) : 0);
 }
 
-int dBinVTableGetHeight(const DWidget *widget) {
+int dBinVTableGetHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
 	// Simply use childs height (or 0 if empty)
-	const DWidget *child=dBinGetChildConst(widget);
+	DWidget *child=dBinGetChild(widget);
 	return (child!=NULL ? dWidgetGetHeight(child) : 0);
 }
 

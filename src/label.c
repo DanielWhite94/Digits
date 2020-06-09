@@ -14,8 +14,8 @@ const int dLabelFontHeight=10;
 void dLabelVTableDestructor(DWidget *widget);
 int dLabelVTableGetMinWidth(const DWidget *widget);
 int dLabelVTableGetMinHeight(const DWidget *widget);
-int dLabelVTableGetWidth(const DWidget *widget);
-int dLabelVTableGetHeight(const DWidget *widget);
+int dLabelVTableGetWidth(DWidget *widget);
+int dLabelVTableGetHeight(DWidget *widget);
 
 DWidget *dLabelNew(const char *text) {
 	assert(text!=NULL);
@@ -103,14 +103,14 @@ int dLabelVTableGetMinHeight(const DWidget *widget) {
 	return dLabelFontHeight;
 }
 
-int dLabelVTableGetWidth(const DWidget *widget) {
+int dLabelVTableGetWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
 	// For now assume we have a single line
 	return dLabelFontWidth*strlen(dLabelGetText(widget));
 }
 
-int dLabelVTableGetHeight(const DWidget *widget) {
+int dLabelVTableGetHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
 	// For now assume we have a single line

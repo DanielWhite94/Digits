@@ -70,8 +70,8 @@ const DWidget *dWidgetGetWindowConst(const DWidget *widget);
 DWidget *dWidgetGetWidgetByXY(DWidget *widget, int globalX, int globalY); // x and y are relative to the top left of the root Window
 int dWidgetGetMinWidth(const DWidget *widget);
 int dWidgetGetMinHeight(const DWidget *widget);
-int dWidgetGetWidth(const DWidget *widget);
-int dWidgetGetHeight(const DWidget *widget);
+int dWidgetGetWidth(DWidget *widget);
+int dWidgetGetHeight(DWidget *widget);
 // These two functions return values relative to the top left corner of the parent Window
 int dWidgetGetGlobalX(const DWidget *widget);
 int dWidgetGetGlobalY(const DWidget *widget);
@@ -82,7 +82,7 @@ int dWidgetGetChildYOffset(const DWidget *parent, const DWidget *child);
 bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData);
 DWidgetSignalReturn dWidgetSignalInvoke(const DWidgetSignalEvent *event); // returns DWidgetSignalReturnStop if any handlers do, otherwise returns DWidgetSignalReturnContinue
 
-void dWidgetDebug(const DWidget *widget, int indentation);
+void dWidgetDebug(DWidget *widget, int indentation);
 
 bool dWidgetTypeIsValid(DWidgetType type);
 const char *dWidgetTypeToString(DWidgetType type);

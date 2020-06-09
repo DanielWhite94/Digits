@@ -14,8 +14,8 @@ const DColour dWindowBackgroundColour={.r=32, .g=32, .b=32, .a=255};
 
 void dWindowVTableDestructor(DWidget *widget);
 void dWindowVTableRedraw(DWidget *widget, SDL_Renderer *renderer);
-int dWindowVTableGetWidth(const DWidget *widget);
-int dWindowVTableGetHeight(const DWidget *widget);
+int dWindowVTableGetWidth(DWidget *widget);
+int dWindowVTableGetHeight(DWidget *widget);
 
 DWidget *dWindowNew(const char *title, int width, int height) {
 	assert(title!=NULL);
@@ -113,7 +113,7 @@ void dWindowVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
 	SDL_RenderPresent(renderer);
 }
 
-int dWindowVTableGetWidth(const DWidget *widget) {
+int dWindowVTableGetWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
 	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(widget, DWidgetTypeWindow);
@@ -123,7 +123,7 @@ int dWindowVTableGetWidth(const DWidget *widget) {
 	return width;
 }
 
-int dWindowVTableGetHeight(const DWidget *widget) {
+int dWindowVTableGetHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
 	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(widget, DWidgetTypeWindow);

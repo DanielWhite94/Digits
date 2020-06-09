@@ -26,8 +26,8 @@ static const DWidgetType dWidgetTypeExtends[DWidgetTypeNB]={
 
 int dWidgetVTableGetMinWidth(const DWidget *widget);
 int dWidgetVTableGetMinHeight(const DWidget *widget);
-int dWidgetVTableGetWidth(const DWidget *widget);
-int dWidgetVTableGetHeight(const DWidget *widget);
+int dWidgetVTableGetWidth(DWidget *widget);
+int dWidgetVTableGetHeight(DWidget *widget);
 
 DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type);
 void dWidgetObjectDataFree(DWidgetObjectData *data);
@@ -227,7 +227,7 @@ int dWidgetGetMinHeight(const DWidget *widget) {
 	return 0;
 }
 
-int dWidgetGetWidth(const DWidget *widget) {
+int dWidgetGetWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
 	DWidgetObjectData *data;
@@ -239,7 +239,7 @@ int dWidgetGetWidth(const DWidget *widget) {
 	return 0;
 }
 
-int dWidgetGetHeight(const DWidget *widget) {
+int dWidgetGetHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
 	DWidgetObjectData *data;
@@ -348,7 +348,7 @@ DWidgetSignalReturn dWidgetSignalInvoke(const DWidgetSignalEvent *event) {
 	return DWidgetSignalReturnContinue;
 }
 
-void dWidgetDebug(const DWidget *widget, int indentation) {
+void dWidgetDebug(DWidget *widget, int indentation) {
 	assert(widget!=NULL);
 	assert(indentation>=0);
 
@@ -363,7 +363,7 @@ void dWidgetDebug(const DWidget *widget, int indentation) {
 	if (dWidgetGetHasType(widget, DWidgetTypeContainer)) {
 		size_t childCount=dContainerGetChildCount(widget);
 		for(size_t i=0; i<childCount; ++i)
-			dWidgetDebug(dContainerGetChildNConst(widget, i), indentation+2);
+			dWidgetDebug(dContainerGetChildN(widget, i), indentation+2);
 	}
 }
 
@@ -488,13 +488,13 @@ int dWidgetVTableGetMinHeight(const DWidget *widget) {
 	return 0;
 }
 
-int dWidgetVTableGetWidth(const DWidget *widget) {
+int dWidgetVTableGetWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
 	return 0;
 }
 
-int dWidgetVTableGetHeight(const DWidget *widget) {
+int dWidgetVTableGetHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
 	return 0;
