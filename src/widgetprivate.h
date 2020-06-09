@@ -38,6 +38,8 @@ typedef struct {
 
 typedef struct {
 	char *text;
+
+	SDL_Texture *texture;
 } DWidgetObjectDataLabel;
 
 typedef struct {
