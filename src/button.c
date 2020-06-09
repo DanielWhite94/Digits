@@ -75,8 +75,15 @@ DWidgetSignalReturn dButtonHandlerWidgetButtonPress(const DWidgetSignalEvent *ev
 
 	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(event->widget, DWidgetTypeButton);
 
+	// Already pressed?
+	if (data->d.button.pressed)
+		return DWidgetSignalReturnContinue;
+
 	// Set pressed flag
 	data->d.button.pressed=true;
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(event->widget);
 
 	// Indicate we have handled this event
 	return DWidgetSignalReturnStop;
@@ -95,6 +102,9 @@ DWidgetSignalReturn dButtonHandlerWidgetButtonRelease(const DWidgetSignalEvent *
 	// Clear pressed flag
 	data->d.button.pressed=false;
 
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(event->widget);
+
 	// Invoke button click signal
 	DWidgetSignalEvent dEvent;
 	dEvent.type=DWidgetSignalTypeButtonClick;
@@ -111,8 +121,15 @@ DWidgetSignalReturn dButtonHandlerWidgetLeave(const DWidgetSignalEvent *event, v
 
 	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(event->widget, DWidgetTypeButton);
 
+	// Not pressed?
+	if (!data->d.button.pressed)
+		return DWidgetSignalReturnContinue;
+
 	// Clear pressed flag (but do not invoke clicked signal - consider process aborted)
 	data->d.button.pressed=false;
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(event->widget);
 
 	return DWidgetSignalReturnStop;
 }
