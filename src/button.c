@@ -56,9 +56,6 @@ void dButtonVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
 
 	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeButton);
 
-	// Call super redraw
-	dWidgetRedraw(widget, data->super, renderer);
-
 	// Draw rectangle to represent body of button
 	dSetRenderDrawColour(renderer, (data->d.button.pressed ? &dButtonPressedColour : &dButtonReleasedColour));
 	SDL_Rect rect;
@@ -67,6 +64,9 @@ void dButtonVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
 	rect.w=dWidgetGetWidth(widget);
 	rect.h=dWidgetGetHeight(widget);
 	SDL_RenderFillRect(renderer, &rect);
+
+	// Call super redraw
+	dWidgetRedraw(widget, data->super, renderer);
 }
 
 DWidgetSignalReturn dButtonHandlerWidgetButtonPress(const DWidgetSignalEvent *event, void *userData) {
