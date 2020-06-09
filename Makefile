@@ -1,6 +1,6 @@
 CPP = gcc
 CFLAGS = -std=gnu11 -Wall -O0 -ggdb3
-LFLAGS = -lSDL2
+LFLAGS = -lSDL2 -lSDL2_ttf
 
 OBJS = ./src/bin.o ./src/button.o ./src/container.o ./src/digits.o ./src/label.o ./src/main.o ./src/textbutton.o ./src/util.o ./src/widget.o ./src/window.o
 

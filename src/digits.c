@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "digits.h"
 #include "util.h"
@@ -22,6 +23,10 @@ bool digitsInit(void) {
 	// Initialise SDL
 	if(SDL_Init(SDL_INIT_VIDEO)<0)
 		return false;
+	if (TTF_Init()!=0) {
+		SDL_Quit();
+		return false;
+	}
 
 	// Initialisation complete
 	digitsInitFlag=true;
@@ -35,6 +40,7 @@ void digitsQuit(void) {
 		return;
 
 	// Quit SDL
+	TTF_Quit();
 	SDL_Quit();
 
 	// Clear init and quit flags
