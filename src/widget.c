@@ -89,6 +89,16 @@ SDL_Renderer *dWidgetGetRenderer(DWidget *widget) {
 	return dWindowGetRenderer(window);
 }
 
+void dWidgetSetDirty(DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidget *window=dWidgetGetWindow(widget);
+	if (window==NULL)
+		return;
+
+	dWindowSetDirty(window);
+}
+
 void dWidgetRedraw(DWidget *widget, DWidgetObjectData *data, SDL_Renderer *renderer) {
 	assert(widget!=NULL);
 	// data can be NULL

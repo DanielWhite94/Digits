@@ -46,6 +46,7 @@ void dWindowConstructor(DWidget *widget, DWidgetObjectData *data, const char *ti
 	// Init fields
 	data->d.window.sdlWindow=NULL;
 	data->d.window.renderer=NULL;
+	data->d.window.dirty=true;
 
 	// Create SDL backing window and add some custom data to point back to our widget
 	data->d.window.sdlWindow=SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
@@ -85,6 +86,15 @@ SDL_Renderer *dWindowGetRenderer(DWidget *widget) {
 	return data->d.window.renderer;
 }
 
+
+void dWindowSetDirty(DWidget *window) {
+	assert(window!=NULL);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(window, DWidgetTypeWindow);
+
+	data->d.window.dirty=true;
+}
+
 void dWindowVTableDestructor(DWidget *widget) {
 	assert(widget!=NULL);
 
@@ -109,6 +119,10 @@ void dWindowVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
 
 	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWindow);
 
+	// Not even dirty?
+	if (!data->d.window.dirty)
+		return;
+
 	// Clear entire window to background colour
 	dSetRenderDrawColour(renderer, &dWindowBackgroundColour);
 	SDL_RenderClear(renderer);
@@ -118,6 +132,9 @@ void dWindowVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
 
 	// Update screen
 	SDL_RenderPresent(renderer);
+
+	// Clear dirty flag
+	data->d.window.dirty=false;
 }
 
 int dWindowVTableGetWidth(DWidget *widget) {

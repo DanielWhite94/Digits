@@ -45,6 +45,8 @@ typedef struct {
 typedef struct {
 	SDL_Window *sdlWindow;
 	SDL_Renderer *renderer;
+
+	bool dirty; // true if need to redraw
 } DWidgetObjectDataWindow;
 
 typedef struct DWidgetObjectData DWidgetObjectData;
@@ -79,6 +81,7 @@ void dWidgetConstructor(DWidget *widget, DWidgetObjectData *data);
 void dWidgetDestructor(DWidget *widget, DWidgetObjectData *data); // starts from data sub class when searching for vtable entries (if data is NULL then function does nothing)
 
 SDL_Renderer *dWidgetGetRenderer(DWidget *widget); // returns NULL if not a Window or descendant of a Window
+void dWidgetSetDirty(DWidget *widget); // sets dirty flag of containing window
 
 void dWidgetRedraw(DWidget *widget, DWidgetObjectData *data, SDL_Renderer *renderer); // starts from data sub class when searching for vtable entries (if data is NULL then function does nothing)
 

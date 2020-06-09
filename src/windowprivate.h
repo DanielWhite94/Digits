@@ -10,4 +10,6 @@ void dWindowConstructor(DWidget *widget, DWidgetObjectData *data, const char *ti
 
 SDL_Renderer *dWindowGetRenderer(DWidget *widget);
 
+void dWindowSetDirty(DWidget *window);
+
 #endif

@@ -15,6 +15,7 @@ DWidget **digitsWindows=NULL;
 size_t digitWindowCount=0;
 
 void digitsLoopHandleSdlEvents(void);
+void digitsLoopRedrawWindows(void);
 
 DWidget *digitsGetWidgetFromSdlWindowId(unsigned id);
 
@@ -67,6 +68,9 @@ void digitsLoop(void) {
 	while(!digitsQuitFlag) {
 		// Check SDL events
 		digitsLoopHandleSdlEvents();
+
+		// Refresh any dirty windows
+		digitsLoopRedrawWindows();
 
 		// Delay to avoid high CPU usage
 		dDelayMs(10);
@@ -176,8 +180,8 @@ void digitsLoopHandleSdlEvents(void) {
 				// Event specific logic
 				switch(sdlEvent.window.event) {
 					case SDL_WINDOWEVENT_EXPOSED:
-						// Call redraw on window
-						dWidgetRedraw(windowWidget, windowWidget->base, dWindowGetRenderer(windowWidget));
+						// Mark window as dirty
+						dWindowSetDirty(windowWidget);
 					break;
 					case SDL_WINDOWEVENT_CLOSE: {
 						// Invoke window close signal
@@ -193,6 +197,14 @@ void digitsLoopHandleSdlEvents(void) {
 				digitsLoopStop();
 			break;
 		}
+	}
+}
+
+void digitsLoopRedrawWindows(void) {
+	// Call redraw on each window
+	for(size_t i=0; i<digitWindowCount; ++i) {
+		DWidget *window=digitsWindows[i];
+		dWidgetRedraw(window, window->base, dWindowGetRenderer(window));
 	}
 }
 
