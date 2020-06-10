@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
 
 	// Tidy up
 	dWidgetFree(window);
+	dWidgetFree(window2);
 	digitsQuit();
 
 	return 0;
