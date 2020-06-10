@@ -51,6 +51,8 @@ void digitsQuit(void) {
 		return;
 
 	// Close open windows and free memory
+	for(size_t i=0; i<digitWindowCount; ++i)
+		dWidgetFree(digitsWindows[i]);
 	free(digitsWindows);
 	digitsWindows=NULL;
 
