@@ -47,6 +47,8 @@ typedef struct {
 	SDL_Renderer *renderer;
 
 	bool dirty; // true if need to redraw
+
+	DWidget *mouseFocusWidget; // widget under the mouse (can be NULL if mouse not inside window)
 } DWidgetObjectDataWindow;
 
 typedef struct DWidgetObjectData DWidgetObjectData;

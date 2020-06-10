@@ -47,6 +47,7 @@ void dWindowConstructor(DWidget *widget, DWidgetObjectData *data, const char *ti
 	data->d.window.sdlWindow=NULL;
 	data->d.window.renderer=NULL;
 	data->d.window.dirty=true;
+	data->d.window.mouseFocusWidget=NULL;
 
 	// Create SDL backing window and add some custom data to point back to our widget
 	data->d.window.sdlWindow=SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
@@ -93,6 +94,67 @@ void dWindowSetDirty(DWidget *window) {
 	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(window, DWidgetTypeWindow);
 
 	data->d.window.dirty=true;
+}
+
+void dWindowSetMouseFocusWidget(DWidget *window, DWidget *newWidget) {
+	assert(window!=NULL);
+	assert(newWidget==NULL || newWidget==window || dWidgetIsAncestor(window, newWidget));
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(window, DWidgetTypeWindow);
+
+	// No change?
+	DWidget *oldWidget=data->d.window.mouseFocusWidget;
+	if (newWidget==oldWidget)
+		return;
+
+	// Keep track of newWidget lineage to help generate Enter events
+	DWidget *newWidgetLineageStack[64];
+	size_t newWidgetLineageStackCount=0;
+
+	DWidget *loopWidget=newWidget;
+	while(loopWidget!=NULL) {
+		if (newWidgetLineageStackCount==64)
+			dFatalError("error: widget %p has too many ancestors (while generating leave enter events)\n", newWidget);
+		newWidgetLineageStack[newWidgetLineageStackCount++]=loopWidget;
+		loopWidget=dWidgetGetParent(loopWidget);
+	}
+
+	// Generate Leave events from oldWidget upwards, stopping if we hit a common ancestor of newWidget
+	size_t commonAncestorIndex=newWidgetLineageStackCount;
+	while(oldWidget!=NULL) {
+		// Search through new widget lineage to see if this is a common ancestor
+		// (if it is, it must be the lowest common ancestor)
+		for(size_t i=0; i<newWidgetLineageStackCount; ++i) {
+			if (oldWidget==newWidgetLineageStack[i]) {
+				commonAncestorIndex=i;
+			}
+		}
+		if (commonAncestorIndex!=newWidgetLineageStackCount)
+			break;
+
+		// Invoke widget Leave signal
+		DWidgetSignalEvent dEvent;
+		dEvent.type=DWidgetSignalTypeWidgetLeave;
+		dEvent.widget=oldWidget;
+		dWidgetSignalInvoke(&dEvent);
+
+		// Move up the tree to look for next wiget mouse may have left
+		oldWidget=dWidgetGetParent(oldWidget);
+	}
+
+	// Generate Enter events based on common ancestor found in previous step (if any)
+	while(commonAncestorIndex>0) {
+		--commonAncestorIndex;
+
+		// Invoke widget Enter signal
+		DWidgetSignalEvent dEvent;
+		dEvent.type=DWidgetSignalTypeWidgetEnter;
+		dEvent.widget=newWidgetLineageStack[commonAncestorIndex];
+		dWidgetSignalInvoke(&dEvent);
+	}
+
+	// Update cached mouseFocusWidget for next call
+	data->d.window.mouseFocusWidget=newWidget;
 }
 
 void dWindowVTableDestructor(DWidget *widget) {
