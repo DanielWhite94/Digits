@@ -199,6 +199,10 @@ void digitsLoopHandleSdlEvents(void) {
 						// Mark window as dirty
 						dWindowSetDirty(windowWidget);
 					break;
+					case SDL_WINDOWEVENT_LEAVE:
+						// Update cached widget under mouse to be NULL and potentially generate Leave events
+						dWindowSetMouseFocusWidget(windowWidget, NULL);
+					break;
 					case SDL_WINDOWEVENT_CLOSE: {
 						// Invoke window close signal
 						DWidgetSignalEvent dEvent;
