@@ -105,7 +105,7 @@ void digitsDeregisterWindow(DWidget *widget) {
 		return;
 
 	// Remove from array by shifting others down and reducing the count
-	memmove(digitsWindows+index, digitsWindows+index+1, (--digitWindowCount)-index);
+	memmove(digitsWindows+index, digitsWindows+index+1, sizeof(DWidget *)*((--digitWindowCount)-index));
 }
 
 void digitsLoopHandleSdlEvents(void) {
