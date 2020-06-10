@@ -62,6 +62,7 @@ void dWidgetFree(DWidget *widget);
 
 DWidget *dWidgetGetParent(DWidget *widget);
 const DWidget *dWidgetGetParentConst(const DWidget *widget);
+bool dWidgetIsAncestor(const DWidget *widget, const DWidget *child); // returns true if child has widget among its parents
 DWidgetType dWidgetGetBaseType(const DWidget *widget);
 bool dWidgetGetHasType(const DWidget *widget, DWidgetType type); // does the base type, or any of the derived types match the type given?
 // These two functions return the root Window containing the widget (or NULL if not part of a Window)

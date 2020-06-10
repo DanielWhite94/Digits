@@ -149,6 +149,24 @@ DWidgetType dWidgetGetBaseType(const DWidget *widget) {
 	return widget->base->type;
 }
 
+bool dWidgetIsAncestor(const DWidget *widget, const DWidget *child) {
+	assert(widget!=NULL);
+	assert(child!=NULL);
+
+	const DWidget *childParent=dWidgetGetParentConst(child);
+
+	// Does child simply have no ancestors?
+	if (childParent==NULL)
+		return false;
+
+	// Is widget simply the direct parent of child?
+	if (childParent==widget)
+		return true;
+
+	// Otherwise work up through parents recursively
+	return dWidgetIsAncestor(widget, childParent);
+}
+
 bool dWidgetGetHasType(const DWidget *widget, DWidgetType type) {
 	assert(widget!=NULL);
 	assert(dWidgetTypeIsValid(type));
