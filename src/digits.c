@@ -171,6 +171,72 @@ void digitsLoopHandleSdlEvents(void) {
 					targetWidget=dWidgetGetParent(targetWidget);
 				}
 			} break;
+			case SDL_MOUSEMOTION: {
+				// Find widget represented by this event's SDL window ID
+				DWidget *windowWidget=digitsGetWidgetFromSdlWindowId(sdlEvent.motion.windowID);
+				if (windowWidget==NULL) {
+					dWarning("warning: could not get window widget for SDL_MOUSEMOTION event, ignoring\n");
+					break;
+				}
+
+				// Find old widget
+				// Note: if xrel and yrel are both be 0 then we mouse has just entered the window, so no leaving widget
+				DWidget *oldWidget=NULL;
+				if (sdlEvent.motion.xrel!=0 || sdlEvent.motion.yrel!=0) {
+					int oldX=sdlEvent.motion.x-sdlEvent.motion.xrel;
+					int oldY=sdlEvent.motion.y-sdlEvent.motion.yrel;
+					oldWidget=dWidgetGetWidgetByXY(windowWidget, oldX, oldY);
+				}
+
+				// Find new widget
+				DWidget *newWidget=dWidgetGetWidgetByXY(windowWidget, sdlEvent.motion.x, sdlEvent.motion.y);
+
+				// Check for a change
+				if (newWidget!=oldWidget) {
+					// Keep track of newWidget lineage to help generate Enter events
+					DWidget *newWidgetLineageStack[64]; // ..... add check we do not add too many to this, use dFatalError presumably
+					size_t newWidgetLineageStackCount=0;
+
+					while(newWidget!=NULL) {
+						newWidgetLineageStack[newWidgetLineageStackCount++]=newWidget;
+						newWidget=dWidgetGetParent(newWidget);
+					}
+
+					// Generate Leave events from oldWidget upwards, stopping if we hit a common ancestor of newWidget
+					size_t commonAncestorIndex=newWidgetLineageStackCount;
+					while(oldWidget!=NULL) {
+						// Search through new widget lineage to see if this is a common ancestor
+						// (if it is, it must be the lowest common ancestor)
+						for(size_t i=0; i<newWidgetLineageStackCount; ++i) {
+							if (oldWidget==newWidgetLineageStack[i]) {
+								commonAncestorIndex=i;
+							}
+						}
+						if (commonAncestorIndex!=newWidgetLineageStackCount)
+							break;
+
+						// Invoke widget Leave signal
+						DWidgetSignalEvent dEvent;
+						dEvent.type=DWidgetSignalTypeWidgetLeave;
+						dEvent.widget=oldWidget;
+						dWidgetSignalInvoke(&dEvent);
+
+						// Move up the tree to look for next wiget mouse may have left
+						oldWidget=dWidgetGetParent(oldWidget);
+					}
+
+					// Generate Enter events based on common ancestor found in previous step (if any)
+					while(commonAncestorIndex>0) {
+						--commonAncestorIndex;
+
+						// Invoke widget Enter signal
+						DWidgetSignalEvent dEvent;
+						dEvent.type=DWidgetSignalTypeWidgetEnter;
+						dEvent.widget=newWidgetLineageStack[commonAncestorIndex];
+						dWidgetSignalInvoke(&dEvent);
+					}
+				}
+			} break;
 			case SDL_WINDOWEVENT: {
 				// Find widget represented by this event's SDL window ID
 				DWidget *windowWidget=digitsGetWidgetFromSdlWindowId(sdlEvent.window.windowID);
