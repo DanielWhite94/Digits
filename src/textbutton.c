@@ -29,9 +29,13 @@ void dTextButtonConstructor(DWidget *widget, DWidgetObjectData *data, const char
 	assert(data->type==DWidgetTypeTextButton);
 	assert(text!=NULL);
 
-	// Call super constructor first
+	// Create interior label
+	DWidget *label=dLabelNew(text);
+	dWidgetSetPadding(label, 5);
+
+	// Call super constructor
 	// Also might as well add label at the same time
-	dButtonConstructor(widget, data->super, dLabelNew(text));
+	dButtonConstructor(widget, data->super, label);
 }
 
 void dTextButtonSetText(DWidget *button, const char *text) {
