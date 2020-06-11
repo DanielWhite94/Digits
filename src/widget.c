@@ -56,6 +56,12 @@ void dWidgetConstructor(DWidget *widget, DWidgetObjectData *data) {
 	// Note: this class does not derive from any and so does not need to call another constructor
 	assert(data->super==NULL);
 
+	// Init fields
+	data->d.widget.paddingTop=0;
+	data->d.widget.paddingBottom=0;
+	data->d.widget.paddingLeft=0;
+	data->d.widget.paddingRight=0;
+
 	// Setup vtable
 	data->vtable.getMinWidth=&dWidgetVTableGetMinWidth;
 	data->vtable.getMinHeight=&dWidgetVTableGetMinHeight;
@@ -337,6 +343,100 @@ int dWidgetGetChildYOffset(const DWidget *parent, const DWidget *child) {
 	return 0;
 }
 
+int dWidgetGetPaddingTop(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(widget, DWidgetTypeWidget);
+
+	return data->d.widget.paddingTop;
+}
+
+int dWidgetGetPaddingBottom(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(widget, DWidgetTypeWidget);
+
+	return data->d.widget.paddingBottom;
+}
+
+int dWidgetGetPaddingLeft(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(widget, DWidgetTypeWidget);
+
+	return data->d.widget.paddingLeft;
+}
+
+int dWidgetGetPaddingRight(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(widget, DWidgetTypeWidget);
+
+	return data->d.widget.paddingRight;
+}
+
+void dWidgetSetPadding(DWidget *widget, int padding) {
+	assert(widget!=NULL);
+	assert(padding>=0);
+
+	dWidgetSetPaddingTop(widget, padding);
+	dWidgetSetPaddingBottom(widget, padding);
+	dWidgetSetPaddingLeft(widget, padding);
+	dWidgetSetPaddingRight(widget, padding);
+}
+
+void dWidgetSetPaddingTop(DWidget *widget, int padding) {
+	assert(widget!=NULL);
+	assert(padding>=0);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWidget);
+
+	// Update padding field
+	data->d.widget.paddingTop=padding;
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(widget);
+}
+
+void dWidgetSetPaddingBottom(DWidget *widget, int padding) {
+	assert(widget!=NULL);
+	assert(padding>=0);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWidget);
+
+	// Update padding field
+	data->d.widget.paddingBottom=padding;
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(widget);
+}
+
+void dWidgetSetPaddingLeft(DWidget *widget, int padding) {
+	assert(widget!=NULL);
+	assert(padding>=0);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWidget);
+
+	// Update padding field
+	data->d.widget.paddingLeft=padding;
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(widget);
+}
+
+void dWidgetSetPaddingRight(DWidget *widget, int padding) {
+	assert(widget!=NULL);
+	assert(padding>=0);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWidget);
+
+	// Update padding field
+	data->d.widget.paddingRight=padding;
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(widget);
+}
+
 bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData) {
 	assert(widget!=NULL);
 	assert(dWidgetSignalTypeIsValid(type));
@@ -507,25 +607,25 @@ const DWidgetObjectData *dWidgetGetObjectDataConstNoFail(const DWidget *widget, 
 int dWidgetVTableGetMinWidth(const DWidget *widget) {
 	assert(widget!=NULL);
 
-	return 0;
+	return dWidgetGetPaddingLeft(widget)+dWidgetGetPaddingRight(widget);
 }
 
 int dWidgetVTableGetMinHeight(const DWidget *widget) {
 	assert(widget!=NULL);
 
-	return 0;
+	return dWidgetGetPaddingTop(widget)+dWidgetGetPaddingBottom(widget);
 }
 
 int dWidgetVTableGetWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
-	return 0;
+	return dWidgetGetPaddingLeft(widget)+dWidgetGetPaddingRight(widget);
 }
 
 int dWidgetVTableGetHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
-	return 0;
+	return dWidgetGetPaddingTop(widget)+dWidgetGetPaddingBottom(widget);
 }
 
 DWidgetObjectData *dWidgetObjectDataNew(DWidgetType type) {

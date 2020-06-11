@@ -122,6 +122,9 @@ int dContainerVTableGetMinWidth(const DWidget *widget) {
 		sum+=dWidgetGetMinWidth(child);
 	}
 
+	// Add padding
+	sum+=dWidgetGetPaddingLeft(widget)+dWidgetGetPaddingRight(widget);
+
 	return sum;
 }
 
@@ -136,6 +139,9 @@ int dContainerVTableGetMinHeight(const DWidget *widget) {
 		const DWidget *child=dContainerGetChildNConst(widget, i);
 		sum+=dWidgetGetMinHeight(child);
 	}
+
+	// Add padding
+	sum+=dWidgetGetPaddingTop(widget)+dWidgetGetPaddingBottom(widget);
 
 	return sum;
 }

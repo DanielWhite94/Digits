@@ -43,6 +43,13 @@ typedef struct {
 } DWidgetObjectDataLabel;
 
 typedef struct {
+	int paddingTop;
+	int paddingBottom;
+	int paddingLeft;
+	int paddingRight;
+} DWidgetObjectDataWidget;
+
+typedef struct {
 	SDL_Window *sdlWindow;
 	SDL_Renderer *renderer;
 
@@ -59,6 +66,7 @@ struct DWidgetObjectData {
 		DWidgetObjectDataButton button;
 		DWidgetObjectDataContainer container;
 		DWidgetObjectDataLabel label;
+		DWidgetObjectDataWidget widget;
 		DWidgetObjectDataWindow window;
 	} d;
 

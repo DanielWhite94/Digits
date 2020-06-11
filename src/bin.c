@@ -62,7 +62,12 @@ int dBinVTableGetWidth(DWidget *widget) {
 
 	// Simply use childs width (or 0 if empty)
 	DWidget *child=dBinGetChild(widget);
-	return (child!=NULL ? dWidgetGetWidth(child) : 0);
+	int width=(child!=NULL ? dWidgetGetWidth(child) : 0);
+
+	// Add padding
+	width+=dWidgetGetPaddingLeft(widget)+dWidgetGetPaddingRight(widget);
+
+	return width;
 }
 
 int dBinVTableGetHeight(DWidget *widget) {
@@ -70,7 +75,12 @@ int dBinVTableGetHeight(DWidget *widget) {
 
 	// Simply use childs height (or 0 if empty)
 	DWidget *child=dBinGetChild(widget);
-	return (child!=NULL ? dWidgetGetHeight(child) : 0);
+	int height=(child!=NULL ? dWidgetGetHeight(child) : 0);
+
+	// Add padding
+	height+=dWidgetGetPaddingTop(widget)+dWidgetGetPaddingBottom(widget);
+
+	return height;
 }
 
 int dBinVTableGetChildXOffset(const DWidget *parent, const DWidget *child) {
@@ -78,8 +88,8 @@ int dBinVTableGetChildXOffset(const DWidget *parent, const DWidget *child) {
 	assert(child!=NULL);
 	assert(dWidgetGetParentConst(child)==parent);
 
-	// Single child so never any offset
-	return 0;
+	// Single child so offset is simply our left padding
+	return dWidgetGetPaddingLeft(parent);
 }
 
 int dBinVTableGetChildYOffset(const DWidget *parent, const DWidget *child) {
@@ -87,6 +97,6 @@ int dBinVTableGetChildYOffset(const DWidget *parent, const DWidget *child) {
 	assert(child!=NULL);
 	assert(dWidgetGetParentConst(child)==parent);
 
-	// Single child so never any offset
-	return 0;
+	// Single child so offset is simply our top padding
+	return dWidgetGetPaddingTop(parent);
 }

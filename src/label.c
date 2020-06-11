@@ -23,6 +23,9 @@ int dLabelVTableGetMinHeight(const DWidget *widget);
 int dLabelVTableGetWidth(DWidget *widget);
 int dLabelVTableGetHeight(DWidget *widget);
 
+int dLabelGetTextureWidth(DWidget *widget);
+int dLabelGetTextureHeight(DWidget *widget);
+
 DWidget *dLabelNew(const char *text) {
 	assert(text!=NULL);
 
@@ -176,7 +179,12 @@ void dLabelVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
 
 	// Render texture to window
 	if (dLabelGenerateTexture(widget)) {
-		SDL_Rect destRect={.x=dWidgetGetGlobalX(widget), .y=dWidgetGetGlobalY(widget), .w=dWidgetGetWidth(widget), .h=dWidgetGetHeight(widget)};
+		SDL_Rect destRect={
+		    .x=dWidgetGetGlobalX(widget)+dWidgetGetPaddingLeft(widget),
+		    .y=dWidgetGetGlobalY(widget)+dWidgetGetPaddingTop(widget),
+		    .w=dLabelGetTextureWidth(widget),
+		    .h=dLabelGetTextureHeight(widget),
+		};
 		SDL_RenderCopy(renderer, data->d.label.texture, NULL, &destRect);
 	}
 }
@@ -192,24 +200,42 @@ int dLabelVTableGetMinWidth(const DWidget *widget) {
 int dLabelVTableGetMinHeight(const DWidget *widget) {
 	assert(widget!=NULL);
 
-	// Minimum is a single line
-	return dLabelFontSize;
+	// Minimum is a single line plus padding
+	return dLabelFontSize+dWidgetGetPaddingTop(widget)+dWidgetGetPaddingBottom(widget);
 }
+
 
 int dLabelVTableGetWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
-	DWidgetObjectData *data=dWidgetGetObjectDataNoFail((DWidget *)widget, DWidgetTypeLabel);
+	int width=dLabelGetTextureWidth(widget);
+	width+=dWidgetGetPaddingLeft(widget)+dWidgetGetPaddingRight(widget);
+	return width;
+}
+
+int dLabelVTableGetHeight(DWidget *widget) {
+	assert(widget!=NULL);
+
+	int height=dLabelGetTextureHeight(widget);
+	height+=dWidgetGetPaddingTop(widget)+dWidgetGetPaddingBottom(widget);
+	return height;
+}
+
+int dLabelGetTextureWidth(DWidget *widget) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeLabel);
 
 	if (!dLabelGenerateTexture(widget))
 		return 0;
 
 	int width;
 	SDL_QueryTexture(data->d.label.texture, NULL, NULL, &width, NULL);
+
 	return width;
 }
 
-int dLabelVTableGetHeight(DWidget *widget) {
+int dLabelGetTextureHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
 	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeLabel);
@@ -219,5 +245,6 @@ int dLabelVTableGetHeight(DWidget *widget) {
 
 	int height;
 	SDL_QueryTexture(data->d.label.texture, NULL, NULL, NULL, &height);
+
 	return height;
 }
