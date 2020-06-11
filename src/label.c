@@ -86,6 +86,9 @@ void dLabelSetText(DWidget *label, const char *text) {
 
 	// Clear cached texture
 	dLabelClearTexture(label);
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(label);
 }
 
 bool dLabelGenerateTexture(DWidget *label) {

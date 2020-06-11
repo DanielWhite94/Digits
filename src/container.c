@@ -46,6 +46,9 @@ bool dContainerAdd(DWidget *container, DWidget *child) {
 	// Set child's parent to container
 	child->parent=container;
 
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(container);
+
 	return true;
 }
 
