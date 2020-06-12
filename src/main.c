@@ -18,8 +18,27 @@ int main(int argc, char **argv) {
 	// Create test windows
 	DWidget *window=dWindowNew("My Window", 640, 480);
 
-	DWidget *label=dLabelNew("lolwut noob");
-	dBinAdd(window, label);
+	DWidget *box=dBoxNew(DWidgetOrientationVertical);
+	dBinAdd(window, box);
+
+	DWidget *label;
+	label=dLabelNew("lolwut noob");
+	dWidgetSetVExpand(label, true);
+	dContainerAdd(box, label);
+	label=dLabelNew("2");
+	dWidgetSetVExpand(label, true);
+	dContainerAdd(box, label);
+	label=dLabelNew("three");
+	dWidgetSetVExpand(label, true);
+	dContainerAdd(box, label);
+
+	DWidget *box2=dBoxNew(DWidgetOrientationHorizontal);
+	DWidget *spacer=dLabelNew("(spacer)");
+	dWidgetSetHExpand(spacer, true);
+	dContainerAdd(box2, spacer);
+	dContainerAdd(box2, dTextButtonNew("Ok"));
+	dContainerAdd(box2, dTextButtonNew("Cancel"));
+	dContainerAdd(box, box2);
 
 	DWidget *window2=dWindowNew("New Win", 160, 100);
 
