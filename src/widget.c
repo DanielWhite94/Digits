@@ -16,6 +16,7 @@
 // DWidgetTypeNB indicates does not extend anything, which should only be the case for DWidgetTypeWidget
 static const DWidgetType dWidgetTypeExtends[DWidgetTypeNB]={
 	[DWidgetTypeBin]=DWidgetTypeContainer,
+	[DWidgetTypeBox]=DWidgetTypeContainer,
 	[DWidgetTypeButton]=DWidgetTypeBin,
 	[DWidgetTypeContainer]=DWidgetTypeWidget,
 	[DWidgetTypeLabel]=DWidgetTypeWidget,
@@ -569,6 +570,7 @@ bool dWidgetTypeIsValid(DWidgetType type) {
 
 static const char *dWidgetTypeStrings[DWidgetTypeNB]={
 	[DWidgetTypeBin]="Bin",
+	[DWidgetTypeBox]="Box",
 	[DWidgetTypeButton]="Button",
 	[DWidgetTypeContainer]="Container",
 	[DWidgetTypeLabel]="Label",

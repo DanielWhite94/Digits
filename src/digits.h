@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "bin.h"
+#include "box.h"
 #include "button.h"
 #include "container.h"
 #include "label.h"
