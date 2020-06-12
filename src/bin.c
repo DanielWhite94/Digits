@@ -11,6 +11,16 @@ int dBinVTableGetHeight(DWidget *widget);
 int dBinVTableGetChildXOffset(const DWidget *parent, const DWidget *child);
 int dBinVTableGetChildYOffset(const DWidget *parent, const DWidget *child);
 
+DWidget *dBinNew(DWidget *child) {
+	// Create widget instance
+	DWidget *bin=dWidgetNew(DWidgetTypeBin);
+
+	// Call constructor
+	dBinConstructor(bin, bin->base, child);
+
+	return bin;
+}
+
 bool dBinAdd(DWidget *bin, DWidget *child) {
 	assert(bin!=NULL);
 	assert(child!=NULL);
