@@ -5,6 +5,7 @@
 
 #include "bin.h"
 #include "button.h"
+#include "container.h"
 #include "label.h"
 #include "textbutton.h"
 #include "widget.h"
