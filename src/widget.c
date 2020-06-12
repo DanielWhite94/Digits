@@ -61,6 +61,9 @@ void dWidgetConstructor(DWidget *widget, DWidgetObjectData *data) {
 	data->d.widget.paddingBottom=0;
 	data->d.widget.paddingLeft=0;
 	data->d.widget.paddingRight=0;
+	data->d.widget.orientation=DWidgetOrientationHorizontal;
+	data->d.widget.hexpand=false;
+	data->d.widget.vexpand=false;
 
 	// Setup vtable
 	data->vtable.getMinWidth=&dWidgetVTableGetMinWidth;
@@ -375,6 +378,30 @@ int dWidgetGetPaddingRight(const DWidget *widget) {
 	return data->d.widget.paddingRight;
 }
 
+int dWidgetGetOrientation(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(widget, DWidgetTypeWidget);
+
+	return data->d.widget.orientation;
+}
+
+int dWidgetGetHExpand(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(widget, DWidgetTypeWidget);
+
+	return data->d.widget.hexpand;
+}
+
+int dWidgetGetVExpand(const DWidget *widget) {
+	assert(widget!=NULL);
+
+	const DWidgetObjectData *data=dWidgetGetObjectDataConstNoFail(widget, DWidgetTypeWidget);
+
+	return data->d.widget.vexpand;
+}
+
 void dWidgetSetPadding(DWidget *widget, int padding) {
 	assert(widget!=NULL);
 	assert(padding>=0);
@@ -437,6 +464,43 @@ void dWidgetSetPaddingRight(DWidget *widget, int padding) {
 	dWidgetSetDirty(widget);
 }
 
+void dWidgetSetOrientation(DWidget *widget, DWidgetOrientation orientation) {
+	assert(widget!=NULL);
+	assert(dWidgetOrientationIsValid(orientation));
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWidget);
+
+	// Update field
+	data->d.widget.orientation=orientation;
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(widget);
+}
+
+void dWidgetSetHExpand(DWidget *widget, bool hexpand) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWidget);
+
+	// Update field
+	data->d.widget.hexpand=hexpand;
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(widget);
+}
+
+void dWidgetSetVExpand(DWidget *widget, bool vexpand) {
+	assert(widget!=NULL);
+
+	DWidgetObjectData *data=dWidgetGetObjectDataNoFail(widget, DWidgetTypeWidget);
+
+	// Update field
+	data->d.widget.vexpand=vexpand;
+
+	// Mark window as dirty to redraw
+	dWidgetSetDirty(widget);
+}
+
 bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData) {
 	assert(widget!=NULL);
 	assert(dWidgetSignalTypeIsValid(type));
@@ -493,6 +557,10 @@ void dWidgetDebug(DWidget *widget, int indentation) {
 		for(size_t i=0; i<childCount; ++i)
 			dWidgetDebug(dContainerGetChildN(widget, i), indentation+2);
 	}
+}
+
+bool dWidgetOrientationIsValid(DWidgetOrientation orientation) {
+	return (orientation==DWidgetOrientationHorizontal || orientation==DWidgetOrientationVertical);
 }
 
 bool dWidgetTypeIsValid(DWidgetType type) {

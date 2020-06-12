@@ -47,6 +47,10 @@ typedef struct {
 	int paddingBottom;
 	int paddingLeft;
 	int paddingRight;
+
+	DWidgetOrientation orientation; // not all widgets will use this value, it affects things such a Box and Separator
+
+	bool hexpand, vexpand; // horizontal and vertical expand flags
 } DWidgetObjectDataWidget;
 
 typedef struct {

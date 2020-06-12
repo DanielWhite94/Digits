@@ -4,6 +4,11 @@
 #include <stdbool.h>
 
 typedef enum {
+	DWidgetOrientationHorizontal,
+	DWidgetOrientationVertical,
+} DWidgetOrientation;
+
+typedef enum {
 	DWidgetTypeBin,
 	DWidgetTypeButton,
 	DWidgetTypeContainer,
@@ -83,17 +88,25 @@ int dWidgetGetPaddingTop(const DWidget *widget);
 int dWidgetGetPaddingBottom(const DWidget *widget);
 int dWidgetGetPaddingLeft(const DWidget *widget);
 int dWidgetGetPaddingRight(const DWidget *widget);
+int dWidgetGetOrientation(const DWidget *widget);
+int dWidgetGetHExpand(const DWidget *widget);
+int dWidgetGetVExpand(const DWidget *widget);
 
 void dWidgetSetPadding(DWidget *widget, int padding); // equivalent to calling each individual function with the same padding value
 void dWidgetSetPaddingTop(DWidget *widget, int padding);
 void dWidgetSetPaddingBottom(DWidget *widget, int padding);
 void dWidgetSetPaddingLeft(DWidget *widget, int padding);
 void dWidgetSetPaddingRight(DWidget *widget, int padding);
+void dWidgetSetOrientation(DWidget *widget, DWidgetOrientation orientation);
+void dWidgetSetHExpand(DWidget *widget, bool hexpand);
+void dWidgetSetVExpand(DWidget *widget, bool vexpand);
 
 bool dWidgetSignalConnect(DWidget *widget, DWidgetSignalType type, DWidgetSignalHandler *handler, void *userData);
 DWidgetSignalReturn dWidgetSignalInvoke(const DWidgetSignalEvent *event); // returns DWidgetSignalReturnStop if any handlers do, otherwise returns DWidgetSignalReturnContinue
 
 void dWidgetDebug(DWidget *widget, int indentation);
+
+bool dWidgetOrientationIsValid(DWidgetOrientation orientation);
 
 bool dWidgetTypeIsValid(DWidgetType type);
 const char *dWidgetTypeToString(DWidgetType type);
