@@ -74,16 +74,16 @@ bool dWidgetGetHasType(const DWidget *widget, DWidgetType type); // does the bas
 DWidget *dWidgetGetWindow(DWidget *widget);
 const DWidget *dWidgetGetWindowConst(const DWidget *widget);
 DWidget *dWidgetGetWidgetByXY(DWidget *widget, int globalX, int globalY); // x and y are relative to the top left of the root Window
-int dWidgetGetMinWidth(const DWidget *widget);
-int dWidgetGetMinHeight(const DWidget *widget);
+int dWidgetGetMinWidth(DWidget *widget);
+int dWidgetGetMinHeight(DWidget *widget);
 int dWidgetGetWidth(DWidget *widget);
 int dWidgetGetHeight(DWidget *widget);
 // These two functions return values relative to the top left corner of the parent Window
-int dWidgetGetGlobalX(const DWidget *widget);
-int dWidgetGetGlobalY(const DWidget *widget);
+int dWidgetGetGlobalX(DWidget *widget);
+int dWidgetGetGlobalY(DWidget *widget);
 // These two functions return values relatlive to the top left corner of the parent container
-int dWidgetGetChildXOffset(const DWidget *parent, const DWidget *child);
-int dWidgetGetChildYOffset(const DWidget *parent, const DWidget *child);
+int dWidgetGetChildXOffset(DWidget *parent, DWidget *child);
+int dWidgetGetChildYOffset(DWidget *parent, DWidget *child);
 int dWidgetGetPaddingTop(const DWidget *widget);
 int dWidgetGetPaddingBottom(const DWidget *widget);
 int dWidgetGetPaddingLeft(const DWidget *widget);

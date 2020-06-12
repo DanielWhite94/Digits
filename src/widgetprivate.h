@@ -9,12 +9,12 @@
 
 typedef void (DWidgetVTableDestructor)(DWidget *widget);
 typedef void (DWidgetVTableRedraw)(DWidget *widget, SDL_Renderer *renderer);
-typedef int (DWidgetVTableGetMinWidth)(const DWidget *widget);
-typedef int (DWidgetVTableGetMinHeight)(const DWidget *widget);
+typedef int (DWidgetVTableGetMinWidth)(DWidget *widget);
+typedef int (DWidgetVTableGetMinHeight)(DWidget *widget);
 typedef int (DWidgetVTableGetWidth)(DWidget *widget);
 typedef int (DWidgetVTableGetHeight)(DWidget *widget);
-typedef int (DWidgetVTableGetChildXOffset)(const DWidget *parent, const DWidget *child);
-typedef int (DWidgetVTableGetChildYOffset)(const DWidget *parent, const DWidget *child);
+typedef int (DWidgetVTableGetChildXOffset)(DWidget *parent, DWidget *child);
+typedef int (DWidgetVTableGetChildYOffset)(DWidget *parent, DWidget *child);
 
 typedef struct {
 	DWidgetVTableDestructor *destructor;

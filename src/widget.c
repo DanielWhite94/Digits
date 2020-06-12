@@ -24,8 +24,8 @@ static const DWidgetType dWidgetTypeExtends[DWidgetTypeNB]={
 	[DWidgetTypeWidget]=DWidgetTypeNB,
 };
 
-int dWidgetVTableGetMinWidth(const DWidget *widget);
-int dWidgetVTableGetMinHeight(const DWidget *widget);
+int dWidgetVTableGetMinWidth(DWidget *widget);
+int dWidgetVTableGetMinHeight(DWidget *widget);
 int dWidgetVTableGetWidth(DWidget *widget);
 int dWidgetVTableGetHeight(DWidget *widget);
 
@@ -240,7 +240,7 @@ DWidget *dWidgetGetWidgetByXY(DWidget *widget, int globalX, int globalY) {
 	return widget;
 }
 
-int dWidgetGetMinWidth(const DWidget *widget) {
+int dWidgetGetMinWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
 	DWidgetObjectData *data;
@@ -252,7 +252,7 @@ int dWidgetGetMinWidth(const DWidget *widget) {
 	return 0;
 }
 
-int dWidgetGetMinHeight(const DWidget *widget) {
+int dWidgetGetMinHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
 	DWidgetObjectData *data;
@@ -288,12 +288,12 @@ int dWidgetGetHeight(DWidget *widget) {
 	return 0;
 }
 
-int dWidgetGetGlobalX(const DWidget *widget) {
+int dWidgetGetGlobalX(DWidget *widget) {
 	assert(widget!=NULL);
 
 	// If we have no parent, then global offset is 0
 	// (this should only really apply to the root Window widget)
-	const DWidget *parent=dWidgetGetParentConst(widget);
+	DWidget *parent=dWidgetGetParent(widget);
 	if (parent==NULL)
 		return 0;
 
@@ -303,12 +303,12 @@ int dWidgetGetGlobalX(const DWidget *widget) {
 	return parentPos+offset;
 }
 
-int dWidgetGetGlobalY(const DWidget *widget) {
+int dWidgetGetGlobalY(DWidget *widget) {
 	assert(widget!=NULL);
 
 	// If we have no parent, then global offset is 0
 	// (this should only really apply to the root Window widget)
-	const DWidget *parent=dWidgetGetParentConst(widget);
+	DWidget *parent=dWidgetGetParent(widget);
 	if (parent==NULL)
 		return 0;
 
@@ -318,10 +318,10 @@ int dWidgetGetGlobalY(const DWidget *widget) {
 	return parentPos+offset;
 }
 
-int dWidgetGetChildXOffset(const DWidget *parent, const DWidget *child) {
+int dWidgetGetChildXOffset(DWidget *parent, DWidget *child) {
 	assert(parent!=NULL);
 	assert(child!=NULL);
-	assert(dWidgetGetParentConst(child)==parent);
+	assert(dWidgetGetParent(child)==parent);
 
 	DWidgetObjectData *data;
 	for(data=parent->base; data!=NULL; data=data->super)
@@ -332,10 +332,10 @@ int dWidgetGetChildXOffset(const DWidget *parent, const DWidget *child) {
 	return 0;
 }
 
-int dWidgetGetChildYOffset(const DWidget *parent, const DWidget *child) {
+int dWidgetGetChildYOffset(DWidget *parent, DWidget *child) {
 	assert(parent!=NULL);
 	assert(child!=NULL);
-	assert(dWidgetGetParentConst(child)==parent);
+	assert(dWidgetGetParent(child)==parent);
 
 	DWidgetObjectData *data;
 	for(data=parent->base; data!=NULL; data=data->super)
@@ -672,13 +672,13 @@ const DWidgetObjectData *dWidgetGetObjectDataConstNoFail(const DWidget *widget, 
 	return data;
 }
 
-int dWidgetVTableGetMinWidth(const DWidget *widget) {
+int dWidgetVTableGetMinWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
 	return dWidgetGetPaddingLeft(widget)+dWidgetGetPaddingRight(widget);
 }
 
-int dWidgetVTableGetMinHeight(const DWidget *widget) {
+int dWidgetVTableGetMinHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
 	return dWidgetGetPaddingTop(widget)+dWidgetGetPaddingBottom(widget);

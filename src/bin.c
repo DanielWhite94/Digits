@@ -6,10 +6,12 @@
 #include "container.h"
 #include "containerprivate.h"
 
+int dBinVTableGetMinWidth(DWidget *widget);
+int dBinVTableGetMinHeight(DWidget *widget);
 int dBinVTableGetWidth(DWidget *widget);
 int dBinVTableGetHeight(DWidget *widget);
-int dBinVTableGetChildXOffset(const DWidget *parent, const DWidget *child);
-int dBinVTableGetChildYOffset(const DWidget *parent, const DWidget *child);
+int dBinVTableGetChildXOffset(DWidget *parent, DWidget *child);
+int dBinVTableGetChildYOffset(DWidget *parent, DWidget *child);
 
 DWidget *dBinNew(DWidget *child) {
 	// Create widget instance
@@ -42,6 +44,8 @@ void dBinConstructor(DWidget *widget, DWidgetObjectData *data, DWidget *child) {
 	dContainerConstructor(widget, data->super);
 
 	// Setup vtable
+	data->vtable.getMinWidth=&dBinVTableGetMinWidth;
+	data->vtable.getMinHeight=&dBinVTableGetMinHeight;
 	data->vtable.getWidth=&dBinVTableGetWidth;
 	data->vtable.getHeight=&dBinVTableGetHeight;
 	data->vtable.getChildXOffset=&dBinVTableGetChildXOffset;
@@ -65,6 +69,32 @@ const DWidget *dBinGetChildConst(const DWidget *bin) {
 
 	// Simply return first child from container (if exists)
 	return dContainerGetChildNConst(bin, 0);
+}
+
+int dBinVTableGetMinWidth(DWidget *widget) {
+	assert(widget!=NULL);
+
+	// Simply use child's min width (or 0 if empty)
+	DWidget *child=dBinGetChild(widget);
+	int width=(child!=NULL ? dWidgetGetMinWidth(child) : 0);
+
+	// Add padding
+	width+=dWidgetGetPaddingLeft(widget)+dWidgetGetPaddingRight(widget);
+
+	return width;
+}
+
+int dBinVTableGetMinHeight(DWidget *widget) {
+	assert(widget!=NULL);
+
+	// Simply use child's min height (or 0 if empty)
+	DWidget *child=dBinGetChild(widget);
+	int height=(child!=NULL ? dWidgetGetMinHeight(child) : 0);
+
+	// Add padding
+	height+=dWidgetGetPaddingTop(widget)+dWidgetGetPaddingBottom(widget);
+
+	return height;
 }
 
 int dBinVTableGetWidth(DWidget *widget) {
@@ -93,7 +123,7 @@ int dBinVTableGetHeight(DWidget *widget) {
 	return height;
 }
 
-int dBinVTableGetChildXOffset(const DWidget *parent, const DWidget *child) {
+int dBinVTableGetChildXOffset(DWidget *parent, DWidget *child) {
 	assert(parent!=NULL);
 	assert(child!=NULL);
 	assert(dWidgetGetParentConst(child)==parent);
@@ -102,7 +132,7 @@ int dBinVTableGetChildXOffset(const DWidget *parent, const DWidget *child) {
 	return dWidgetGetPaddingLeft(parent);
 }
 
-int dBinVTableGetChildYOffset(const DWidget *parent, const DWidget *child) {
+int dBinVTableGetChildYOffset(DWidget *parent, DWidget *child) {
 	assert(parent!=NULL);
 	assert(child!=NULL);
 	assert(dWidgetGetParentConst(child)==parent);

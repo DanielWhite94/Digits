@@ -18,8 +18,8 @@ void dLabelClearTexture(DWidget *label); // clears cached texture (if any)
 
 void dLabelVTableDestructor(DWidget *widget);
 void dLabelVTableRedraw(DWidget *widget, SDL_Renderer *renderer);
-int dLabelVTableGetMinWidth(const DWidget *widget);
-int dLabelVTableGetMinHeight(const DWidget *widget);
+int dLabelVTableGetMinWidth(DWidget *widget);
+int dLabelVTableGetMinHeight(DWidget *widget);
 int dLabelVTableGetWidth(DWidget *widget);
 int dLabelVTableGetHeight(DWidget *widget);
 
@@ -189,7 +189,7 @@ void dLabelVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
 	}
 }
 
-int dLabelVTableGetMinWidth(const DWidget *widget) {
+int dLabelVTableGetMinWidth(DWidget *widget) {
 	assert(widget!=NULL);
 
 	// TODO: improve this (should probably be width of widest individual character in the text - i.e. using as much height as needed for one letter per line)
@@ -197,7 +197,7 @@ int dLabelVTableGetMinWidth(const DWidget *widget) {
 	return dWidgetGetWidth((DWidget *)widget);
 }
 
-int dLabelVTableGetMinHeight(const DWidget *widget) {
+int dLabelVTableGetMinHeight(DWidget *widget) {
 	assert(widget!=NULL);
 
 	// Minimum is a single line plus padding

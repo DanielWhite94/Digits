@@ -7,8 +7,6 @@
 
 void dContainerVTableDestructor(DWidget *widget);
 void dContainerVTableRedraw(DWidget *widget, SDL_Renderer *renderer);
-int dContainerVTableGetMinWidth(const DWidget *widget);
-int dContainerVTableGetMinHeight(const DWidget *widget);
 
 void dContainerConstructor(DWidget *widget, DWidgetObjectData *data) {
 	assert(widget!=NULL);
@@ -25,8 +23,6 @@ void dContainerConstructor(DWidget *widget, DWidgetObjectData *data) {
 	// Setup vtable
 	data->vtable.destructor=&dContainerVTableDestructor;
 	data->vtable.redraw=&dContainerVTableRedraw;
-	data->vtable.getMinWidth=&dContainerVTableGetMinWidth;
-	data->vtable.getMinHeight=&dContainerVTableGetMinHeight;
 }
 
 bool dContainerAdd(DWidget *container, DWidget *child) {
@@ -108,40 +104,4 @@ void dContainerVTableRedraw(DWidget *widget, SDL_Renderer *renderer) {
 		DWidget *child=data->d.container.children[i];
 		dWidgetRedraw(child, child->base, renderer);
 	}
-}
-
-int dContainerVTableGetMinWidth(const DWidget *widget) {
-	assert(widget!=NULL);
-
-	int sum=0;
-
-	// Sum child min widths
-	size_t childCount=dContainerGetChildCount(widget);
-	for(size_t i=0; i<childCount; ++i) {
-		const DWidget *child=dContainerGetChildNConst(widget, i);
-		sum+=dWidgetGetMinWidth(child);
-	}
-
-	// Add padding
-	sum+=dWidgetGetPaddingLeft(widget)+dWidgetGetPaddingRight(widget);
-
-	return sum;
-}
-
-int dContainerVTableGetMinHeight(const DWidget *widget) {
-	assert(widget!=NULL);
-
-	int sum=0;
-
-	// Sum child min heights
-	size_t childCount=dContainerGetChildCount(widget);
-	for(size_t i=0; i<childCount; ++i) {
-		const DWidget *child=dContainerGetChildNConst(widget, i);
-		sum+=dWidgetGetMinHeight(child);
-	}
-
-	// Add padding
-	sum+=dWidgetGetPaddingTop(widget)+dWidgetGetPaddingBottom(widget);
-
-	return sum;
 }
