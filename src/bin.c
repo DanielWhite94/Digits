@@ -55,7 +55,8 @@ void dBinConstructor(DWidget *widget, DWidgetObjectData *data, DWidget *child) {
 	if (child!=NULL)
 		dBinAdd(widget, child);
 }
-// TODO: consider if we need a destructor to remove data->d.bin.child
+
+// TODO: consider if we need a destructor to remove data->d.bin.child (actually, perhaps this would be better in Container anyway, removing any/all children)
 
 DWidget *dBinGetChild(DWidget *bin) {
 	assert(bin!=NULL);
